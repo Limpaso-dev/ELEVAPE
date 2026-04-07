@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styling (NO @apply here to avoid issues) */
+body {
+  background-color: #0f0f1a;
+  color: white;
+  font-family: sans-serif;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(to right, #8a2be2, #ff00aa, #00cfff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glass effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+}
