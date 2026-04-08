@@ -37,14 +37,12 @@ function Admin() {
     fetchOrders();
   }, []);
 
-  // 🖼️ Handle image + preview
+  // 🖼️ Handle image
   const handleImage = (e) => {
     const file = e.target.files[0];
     setProduct({ ...product, image: file });
 
-    if (file) {
-      setPreview(URL.createObjectURL(file));
-    }
+    if (file) setPreview(URL.createObjectURL(file));
   };
 
   // ➕ Add product
@@ -52,23 +50,20 @@ function Admin() {
     const formData = new FormData();
 
     formData.append("name", product.name);
-    formData.append("price", Number(product.price)); // ✅ FIX
+    formData.append("price", Number(product.price));
     formData.append(
       "compareAtPrice",
       product.compareAtPrice ? Number(product.compareAtPrice) : ""
-    ); // ✅ FIX
+    );
     formData.append("description", product.description);
     formData.append("image", product.image);
 
     await fetch(`${API}/products`, {
       method: "POST",
-      headers: {
-        Authorization: token,
-      },
+      headers: { Authorization: token },
       body: formData,
     });
 
-    // reset form
     setProduct({
       name: "",
       price: "",
@@ -91,8 +86,36 @@ function Admin() {
     fetchProducts();
   };
 
+  // 🔄 UPDATE ORDER STATUS (FIXED)
+  const updateStatus = async (id, status) => {
+    try {
+      const res = await fetch(`${API}/orders/status/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      const data = await res.json();
+
+      console.log("Update response:", data);
+
+      if (!res.ok) {
+        alert(data);
+        return;
+      }
+
+      fetchOrders(); // refresh UI
+    } catch (err) {
+      console.error("Update error:", err);
+      alert("Failed to update status");
+    }
+  };
+
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-6 space-y-10">
 
       {/* HEADER */}
       <h1 className="text-3xl font-bold gradient-text">
@@ -104,7 +127,6 @@ function Admin() {
         <h2 className="text-xl mb-4">Add Product</h2>
 
         <div className="space-y-3">
-
           <input
             value={product.name}
             placeholder="Product Name"
@@ -172,63 +194,33 @@ function Admin() {
         </div>
       </div>
 
-      {/* PRODUCTS LIST */}
+      {/* PRODUCTS */}
       <div>
         <h2 className="text-xl mb-4">Products</h2>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {products.map((p) => {
-            const price = Number(p.price);
-            const compare =
-              p.compareAtPrice && !isNaN(p.compareAtPrice)
-                ? Number(p.compareAtPrice)
-                : null;
+          {products.map((p) => (
+            <div key={p._id} className="glass p-4">
+              <img
+                src={`http://localhost:5000${p.image}`}
+                className="h-32 mx-auto object-contain"
+                alt={p.name}
+              />
 
-            const hasDiscount =
-              compare !== null && compare > price;
+              <h3 className="mt-2 text-lg">{p.name}</h3>
 
-            const discountPercent = hasDiscount
-              ? Math.round(((compare - price) / compare) * 100)
-              : 0;
+              <p className="text-accent font-semibold">
+                {p.price} AUD
+              </p>
 
-            return (
-              <div key={p._id} className="glass p-4">
-
-                <img
-                  src={`http://localhost:5000${p.image}`}
-                  className="h-32 mx-auto object-contain"
-                  alt={p.name}
-                />
-
-                <h3 className="mt-2 text-lg">{p.name}</h3>
-
-                <div className="flex items-center gap-2 mt-1">
-                  <p className="text-accent font-semibold">
-                    {price} AUD
-                  </p>
-
-                  {hasDiscount && (
-                    <p className="text-gray-400 line-through text-sm">
-                      {compare} AUD
-                    </p>
-                  )}
-                </div>
-
-                {hasDiscount && (
-                  <p className="text-green-500 text-sm">
-                    {discountPercent}% OFF
-                  </p>
-                )}
-
-                <button
-                  onClick={() => deleteProduct(p._id)}
-                  className="mt-3 w-full bg-red-500 p-2 rounded"
-                >
-                  Delete
-                </button>
-              </div>
-            );
-          })}
+              <button
+                onClick={() => deleteProduct(p._id)}
+                className="mt-3 w-full bg-red-500 p-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -236,19 +228,72 @@ function Admin() {
       <div>
         <h2 className="text-xl mb-4">Orders</h2>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o._id} className="glass p-4">
+            <div key={o._id} className="glass p-4 space-y-2">
+
               <p className="text-sm text-gray-300">
                 Order ID: {o._id}
               </p>
 
               <p>Total: {o.total} AUD</p>
-              <p>Status: {o.status}</p>
 
-              <div className="mt-2 text-sm text-gray-400">
-                Items: {o.items.length}
+              {/* STATUS */}
+              <p>
+                Status:
+                <span
+                  className={`ml-2 px-2 py-1 rounded text-sm ${
+                    o.status === "pending"
+                      ? "bg-yellow-500"
+                      : o.status === "shipped"
+                      ? "bg-blue-500"
+                      : o.status === "delivered"
+                      ? "bg-green-500"
+                      : "bg-gray-500"
+                  }`}
+                >
+                  {o.status}
+                </span>
+              </p>
+
+              {/* SHIPPING */}
+              <div className="bg-black/30 p-3 rounded text-sm space-y-1">
+                <p className="font-semibold">Shipping:</p>
+                <p>
+                  {o.shippingAddress?.firstName}{" "}
+                  {o.shippingAddress?.lastName}
+                </p>
+                <p>{o.shippingAddress?.address}</p>
+                <p>
+                  {o.shippingAddress?.suburb},{" "}
+                  {o.shippingAddress?.state}{" "}
+                  {o.shippingAddress?.postcode}
+                </p>
+                <p>📞 {o.shippingAddress?.phone}</p>
               </div>
+
+              {/* ACTIONS */}
+              <div className="flex gap-2 mt-3">
+                {o.status !== "delivered" && (
+                  <>
+                    <button
+                      onClick={() => updateStatus(o._id, "shipped")}
+                      className="bg-blue-500 px-3 py-1 rounded text-sm disabled:opacity-50"
+                      disabled={o.status === "shipped"}
+                    >
+                      Mark Shipped
+                    </button>
+
+                    <button
+                      onClick={() => updateStatus(o._id, "delivered")}
+                      className="bg-green-500 px-3 py-1 rounded text-sm"
+                    >
+                      Mark Delivered
+                    </button>
+                  </>
+                )}
+              </div>
+
             </div>
           ))}
         </div>

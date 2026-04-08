@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; // ✅ ADD THIS
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Login from "./pages/Login";
@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import CartProvider from "./context/CartContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyOrders from "./pages/MyOrders";
+import Checkout from "./pages/Checkout";
 
 function App() {
   return (
@@ -44,6 +45,19 @@ function App() {
               />
 
               <Route
+                path="/checkout" // ✅ NEW ROUTE
+                element={
+                  <ProtectedRoute>
+                    {!JSON.parse(localStorage.getItem("user"))?.isAdmin ? (
+                      <Checkout />
+                    ) : (
+                      <Home />
+                    )}
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
                 path="/orders"
                 element={
                   <ProtectedRoute>
@@ -68,7 +82,7 @@ function App() {
             </Routes>
           </div>
 
-          {/* FOOTER (ALWAYS AT BOTTOM) */}
+          {/* FOOTER */}
           <Footer />
         </div>
       </BrowserRouter>
