@@ -18,7 +18,7 @@ export default function Products() {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
-      navigate("/login"); // redirect instead of alert
+      navigate("/login");
       return;
     }
 
@@ -55,14 +55,12 @@ export default function Products() {
               {/* IMAGE */}
               <div className="relative bg-black/30 rounded-lg p-4 flex items-center justify-center h-52 overflow-hidden">
 
-                {/* SALE BADGE */}
                 {hasDiscount && (
                   <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
                     SALE
                   </span>
                 )}
 
-                {/* OUT OF STOCK OVERLAY */}
                 {!p.inStock && (
                   <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
                     <span className="text-red-400 font-bold text-lg">
@@ -71,8 +69,9 @@ export default function Products() {
                   </div>
                 )}
 
+                {/* ✅ FIXED IMAGE */}
                 <img
-                  src={`${API}${p.image}`}
+                  src={`${API}/${p.image?.replace(/^\/+/, "")}`}
                   alt={p.name}
                   className="h-full object-cover transition duration-300 hover:scale-110"
                 />
@@ -88,7 +87,6 @@ export default function Products() {
                   {p.description || "Premium quality product"}
                 </p>
 
-                {/* PRICE */}
                 <div className="mt-2 flex items-center gap-2">
                   <span className="text-xl font-bold text-accent">
                     {price} AUD
@@ -101,14 +99,12 @@ export default function Products() {
                   )}
                 </div>
 
-                {/* DISCOUNT */}
                 {hasDiscount && (
                   <p className="text-green-500 text-sm">
                     {discountPercent}% OFF
                   </p>
                 )}
 
-                {/* BUTTON */}
                 <button
                   disabled={!p.inStock}
                   onClick={() => handleAddToCart(p)}

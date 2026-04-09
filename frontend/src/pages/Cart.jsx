@@ -1,5 +1,5 @@
 import { useCart } from "../context/CartContext";
-import { useNavigate } from "react-router-dom"; // ✅ ADD THIS
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 export default function Cart() {
@@ -11,9 +11,16 @@ export default function Cart() {
     clearCart,
   } = useCart();
 
-  const navigate = useNavigate(); // ✅ ADD THIS
+  const navigate = useNavigate();
 
-  // ✅ TOTAL WITH QUANTITY
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // 🔒 OPTIONAL: prevent access if not logged in
+  if (!user) {
+    navigate("/login");
+  }
+
+  // TOTAL
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -40,7 +47,8 @@ export default function Cart() {
                 {/* IMAGE */}
                 <div className="w-24 h-24 rounded-lg overflow-hidden bg-black/30">
                   <img
-                    src={`http://localhost:5000${c.image}`}
+                    src={`${API}${c.image}`}
+                    alt={c.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -115,12 +123,20 @@ export default function Cart() {
               </span>
             </div>
 
-            {/* ✅ FIXED BUTTON */}
+            {/* CHECKOUT */}
             <button
               onClick={() => navigate("/checkout")}
               className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded font-semibold hover:opacity-90"
             >
               Proceed to Checkout
+            </button>
+
+            {/* CLEAR CART (optional but useful) */}
+            <button
+              onClick={clearCart}
+              className="w-full mt-3 border border-red-400 text-red-400 p-2 rounded hover:bg-red-400 hover:text-white transition"
+            >
+              Clear Cart
             </button>
           </div>
         </div>
