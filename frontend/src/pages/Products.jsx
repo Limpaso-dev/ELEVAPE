@@ -49,6 +49,15 @@ export default function Products() {
                   </span>
                 )}
 
+                {/* ❌ OUT OF STOCK OVERLAY */}
+                {!p.inStock && (
+                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
+                    <span className="text-red-400 font-bold text-lg">
+                      Out of Stock
+                    </span>
+                  </div>
+                )}
+
                 <img
                   src={`http://localhost:5000${p.image}`}
                   alt={p.name}
@@ -88,10 +97,15 @@ export default function Products() {
 
                 {/* BUTTON */}
                 <button
+                  disabled={!p.inStock}
                   onClick={() => addToCart(p)}
-                  className="mt-3 w-full bg-gradient-to-r from-primary to-secondary p-2 rounded-lg font-semibold hover:opacity-90 transition"
+                  className={`mt-3 w-full p-2 rounded-lg font-semibold transition ${
+                    p.inStock
+                      ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                      : "bg-gray-600 cursor-not-allowed"
+                  }`}
                 >
-                  Add to Cart
+                  {p.inStock ? "Add to Cart" : "Out of Stock"}
                 </button>
               </div>
             </div>
