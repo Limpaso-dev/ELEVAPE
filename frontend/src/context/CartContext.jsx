@@ -5,16 +5,33 @@ const CartContext = createContext();
 export const useCart = () => useContext(CartContext);
 
 function CartProvider({ children }) {
-  const [cart, setCart] = useState(() => {
-    const saved = localStorage.getItem("cart");
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [user, setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user"))
+  );
 
+  const [cart, setCart] = useState([]);
+
+  // 🔁 Load cart when user changes
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
 
-  // ➕ ADD TO CART (with quantity logic)
+    if (storedUser?._id) {
+      const savedCart = localStorage.getItem(`cart_${storedUser._id}`);
+      setCart(savedCart ? JSON.parse(savedCart) : []);
+    } else {
+      setCart([]);
+    }
+  }, []);
+
+  // 💾 Save cart per user
+  useEffect(() => {
+    if (user?._id) {
+      localStorage.setItem(`cart_${user._id}`, JSON.stringify(cart));
+    }
+  }, [cart, user]);
+
+  // ➕ ADD TO CART
   const addToCart = (product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item._id === product._id);
@@ -61,7 +78,12 @@ function CartProvider({ children }) {
   };
 
   // 🧹 CLEAR
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    if (user?._id) {
+      localStorage.removeItem(`cart_${user._id}`);
+    }
+  };
 
   return (
     <CartContext.Provider

@@ -1,16 +1,29 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import { useCart } from "../context/CartContext";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${API}/products`)
       .then((res) => res.json())
       .then(setProducts);
   }, []);
+
+  const handleAddToCart = (product) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user) {
+      navigate("/login"); // redirect instead of alert
+      return;
+    }
+
+    addToCart(product);
+  };
 
   return (
     <div className="p-6">
@@ -49,7 +62,7 @@ export default function Products() {
                   </span>
                 )}
 
-                {/* ❌ OUT OF STOCK OVERLAY */}
+                {/* OUT OF STOCK OVERLAY */}
                 {!p.inStock && (
                   <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
                     <span className="text-red-400 font-bold text-lg">
@@ -59,7 +72,7 @@ export default function Products() {
                 )}
 
                 <img
-                  src={`http://localhost:5000${p.image}`}
+                  src={`${API}${p.image}`}
                   alt={p.name}
                   className="h-full object-cover transition duration-300 hover:scale-110"
                 />
@@ -98,7 +111,7 @@ export default function Products() {
                 {/* BUTTON */}
                 <button
                   disabled={!p.inStock}
-                  onClick={() => addToCart(p)}
+                  onClick={() => handleAddToCart(p)}
                   className={`mt-3 w-full p-2 rounded-lg font-semibold transition ${
                     p.inStock
                       ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90"

@@ -25,7 +25,7 @@ export default function Home() {
             </h1>
 
             <p className="mt-4 text-sm md:text-base text-gray-200">
-              Discover premium products, unbeatable prices, and seamless delivery.
+              Discover premium Vapes, unbeatable prices, and seamless delivery.
             </p>
 
             <Link to="/products">
@@ -71,7 +71,7 @@ export default function Home() {
           Elevape Australia — Your Trusted Destination for Premium Vapes
         </h2>
 
-        <p className="mt-6 text-gray-600 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
+        <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
           Welcome to Elevape Australia, your go-to online store for high-quality, 
           innovative vaping products. We offer a carefully curated collection of 
           sleek, reliable, and flavour-rich devices designed for every type of user.

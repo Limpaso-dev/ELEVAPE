@@ -246,14 +246,14 @@ function Admin() {
               {/* 🔄 TOGGLE STOCK */}
               <button
                 onClick={() => toggleStock(p._id, p.inStock)}
-                className="mt-2 w-full bg-yellow-500 p-2 rounded text-sm"
+                className="mt-2 w-full bg-yellow-700 p-2 rounded text-sm"
               >
                 Toggle Stock
               </button>
 
               <button
                 onClick={() => deleteProduct(p._id)}
-                className="mt-2 w-full bg-red-500 p-2 rounded"
+                className="mt-2 w-full bg-red-900 p-2 rounded"
               >
                 Delete
               </button>

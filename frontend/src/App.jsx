@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -25,7 +26,10 @@ function AppContent() {
     if (saved === "true") setAgeVerified(true);
   }, []);
 
-  // 🔞 SHOW AGE GATE FIRST
+  // 🔐 SAFE USER PARSE (prevents crashes)
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  // 🔞 AGE GATE FIRST
   if (!ageVerified) {
     return <AgeGate onVerify={() => setAgeVerified(true)} />;
   }
@@ -42,16 +46,12 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* USER */}
+          {/* 🛒 USER ROUTES */}
           <Route
             path="/cart"
             element={
               <ProtectedRoute>
-                {!JSON.parse(localStorage.getItem("user"))?.isAdmin ? (
-                  <Cart />
-                ) : (
-                  <Home />
-                )}
+                {!user?.isAdmin ? <Cart /> : <Home />}
               </ProtectedRoute>
             }
           />
@@ -60,11 +60,7 @@ function AppContent() {
             path="/checkout"
             element={
               <ProtectedRoute>
-                {!JSON.parse(localStorage.getItem("user"))?.isAdmin ? (
-                  <Checkout />
-                ) : (
-                  <Home />
-                )}
+                {!user?.isAdmin ? <Checkout /> : <Home />}
               </ProtectedRoute>
             }
           />
@@ -73,16 +69,12 @@ function AppContent() {
             path="/orders"
             element={
               <ProtectedRoute>
-                {!JSON.parse(localStorage.getItem("user"))?.isAdmin ? (
-                  <MyOrders />
-                ) : (
-                  <Home />
-                )}
+                {!user?.isAdmin ? <MyOrders /> : <Home />}
               </ProtectedRoute>
             }
           />
 
-          {/* ADMIN */}
+          {/* 👑 ADMIN */}
           <Route
             path="/admin"
             element={
@@ -103,6 +95,7 @@ function App() {
   return (
     <CartProvider>
       <BrowserRouter>
+        <ScrollToTop /> {/* ✅ SCROLL FIX */}
         <AppContent />
       </BrowserRouter>
     </CartProvider>
