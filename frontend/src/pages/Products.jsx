@@ -69,9 +69,9 @@ export default function Products() {
                   </div>
                 )}
 
-                {/* ✅ FIXED IMAGE */}
+                {/* ✅ FINAL FIX */}
                 <img
-                  src={`${API}/${p.image?.replace(/^\/+/, "")}`}
+                  src={`http://localhost:5000${p.image}`}
                   alt={p.name}
                   className="h-full object-cover transition duration-300 hover:scale-110"
                 />
