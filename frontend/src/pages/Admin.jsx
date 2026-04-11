@@ -277,14 +277,14 @@ function Admin() {
                   onClick={() => updateStatus(o._id, "shipped")}
                   className="bg-blue-500 px-3 py-1 rounded text-sm"
                 >
-                  Ship
+                  Shipped
                 </button>
 
                 <button
                   onClick={() => updateStatus(o._id, "delivered")}
                   className="bg-green-500 px-3 py-1 rounded text-sm"
                 >
-                  Deliver
+                  Delivered
                 </button>
               </div>
             </div>
