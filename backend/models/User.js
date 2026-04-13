@@ -25,9 +25,13 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // ✅ ADD THESE
+    resetToken: String,
+    resetTokenExpiry: Date,
   },
   {
-    timestamps: true, // ✅ adds createdAt & updatedAt
+    timestamps: true,
   }
 );
 
