@@ -15,6 +15,18 @@ import MyOrders from "./pages/MyOrders";
 import Checkout from "./pages/Checkout";
 import AgeGate from "./pages/AgeGate";
 
+// 🔐 AUTH
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
+// 📄 FOOTER PAGES (MATCH YOUR FILE NAMES)
+import CustomerSupport from "./pages/CustomerSupport";
+import Shipping from "./pages/Shipping";
+import PaymentMethods from "./pages/PaymentMethods";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import DeliveryLocations from "./pages/DeliveryLocations";
+
 import CartProvider from "./context/CartContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -26,10 +38,8 @@ function AppContent() {
     if (saved === "true") setAgeVerified(true);
   }, []);
 
-  // 🔐 SAFE USER PARSE (prevents crashes)
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  // 🔞 AGE GATE FIRST
   if (!ageVerified) {
     return <AgeGate onVerify={() => setAgeVerified(true)} />;
   }
@@ -40,13 +50,27 @@ function AppContent() {
 
       <div className="flex-grow">
         <Routes>
+          {/* 🌍 PUBLIC */}
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* 🛒 USER ROUTES */}
+          {/* 🔐 AUTH */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+          {/* 📄 FOOTER PAGES */}
+          <Route path="/support" element={<CustomerSupport />} />
+          <Route path="/shipping" element={<Shipping />} />
+          <Route path="/payment-methods" element={<PaymentMethods />} />
+          <Route path="/payment" element={<PaymentMethods />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/delivery-locations" element={<DeliveryLocations />} />
+
+          {/* 🛒 USER */}
           <Route
             path="/cart"
             element={
@@ -95,7 +119,7 @@ function App() {
   return (
     <CartProvider>
       <BrowserRouter>
-        <ScrollToTop /> {/* ✅ SCROLL FIX */}
+        <ScrollToTop />
         <AppContent />
       </BrowserRouter>
     </CartProvider>

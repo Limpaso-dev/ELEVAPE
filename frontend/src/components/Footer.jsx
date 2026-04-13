@@ -20,21 +20,21 @@ export default function Footer() {
 
         {/* CUSTOMER SUPPORT */}
         <div>
-          <h3 className="font-semibold mb-3 text-gray-300">Customer Support</h3>
-          <ul className="space-y-2 text-sm text-gray-500">
-            <li><Link to="/support" className="hover:text-white transition">Customer Support</Link></li>
+          <h3 className="font-semibold mb-3 text-gray-400">Customer Support</h3>
+          <ul className="space-y-2 text-sm text-gray-300">
+            {/* <li><Link to="/support" className="hover:text-white transition">Customer Support</Link></li> */}
             <li><Link to="/shipping" className="hover:text-white transition">Shipping Policy</Link></li>
             <li><Link to="/payment" className="hover:text-white transition">Payment Methods</Link></li>
             <li><Link to="/privacy" className="hover:text-white transition">Privacy Policy</Link></li>
             <li><Link to="/terms" className="hover:text-white transition">Terms & Conditions</Link></li>
-            <li><Link to="/delivery" className="hover:text-white transition">Delivery Locations</Link></li>
+            {/* <li><Link to="/delivery" className="hover:text-white transition">Delivery Locations</Link></li> */}
           </ul>
         </div>
 
         {/* SHOP */}
         <div>
-          <h3 className="font-semibold mb-3 text-gray-300">Shop</h3>
-          <ul className="space-y-2 text-sm text-gray-500">
+          <h3 className="font-semibold mb-3 text-gray-400">Shop</h3>
+          <ul className="space-y-2 text-sm text-gray-300">
             <li><Link to="/checkout" className="hover:text-white transition">Checkout</Link></li>
             <li><Link to="/cart" className="hover:text-white transition">Cart</Link></li>
             <li><Link to="/products" className="hover:text-white transition">Shop Products</Link></li>
@@ -43,8 +43,8 @@ export default function Footer() {
 
         {/* ACCOUNT */}
         <div>
-          <h3 className="font-semibold mb-3 text-gray-300">Account</h3>
-          <ul className="space-y-2 text-sm text-gray-500">
+          <h3 className="font-semibold mb-3 text-gray-400">Account</h3>
+          <ul className="space-y-2 text-sm text-gray-300">
             <li><Link to="/account" className="hover:text-white transition">Account</Link></li>
             <li><Link to="/orders" className="hover:text-white transition">Orders</Link></li>
             <li><Link to="/forgot-password" className="hover:text-white transition">Lost Password</Link></li>
