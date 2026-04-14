@@ -168,11 +168,16 @@ export default function Checkout() {
 
           {/* BUTTON */}
           <button
-            onClick={checkout}
+            disabled
+  className="w-full bg-gray-600 p-2 rounded cursor-not-allowed"
+>
+  Payments coming soon
+</button>
+            {/* onClick={checkout}
             className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90 transition"
           >
             Pay {total.toFixed(2)} AUD
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
