@@ -35,7 +35,7 @@ export default function PaymentMethods() {
           </ul>
         </section>
 
-        {/* FLUTTERWAVE */}
+        {/* FLUTTERWAVE
         <section>
           <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
             Secure Payments with Flutterwave
@@ -44,7 +44,7 @@ export default function PaymentMethods() {
             All transactions are securely processed through our trusted payment partner. 
             Your card details are encrypted and handled safely — we do not store your payment information.
           </p>
-        </section>
+        </section> */}
 
         {/* CURRENCY */}
         <section>

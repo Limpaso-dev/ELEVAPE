@@ -25,7 +25,7 @@ export default function Shipping() {
           </h2>
           <ul className="list-disc ml-5 space-y-1">
             <li>Orders are processed within 2 business days of payment confirmation.</li>
-            <li>Once processed, orders are dropped off to Australia Post within the next business day.</li>
+            {/* <li>Once processed, orders are dropped off to Australia Post within the next business day.</li> */}
           </ul>
         </section>
 
@@ -39,7 +39,7 @@ export default function Shipping() {
           </p>
         </section>
 
-        {/* IMPORTANT */}
+        {/* IMPORTANT
         <section>
           <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
             Important Information
@@ -49,7 +49,7 @@ export default function Shipping() {
             Once your order is handed over, delivery is subject to their network and external factors
             such as weather, public holidays, or high demand periods.
           </p>
-        </section>
+        </section> */}
 
         {/* TRACKING
         <section>
@@ -79,7 +79,7 @@ export default function Shipping() {
           </p>
         </section>
 
-        {/* DELIVERY TABLE */}
+        {/* DELIVERY TABLE
         <section>
           <h2 className="text-lg sm:text-xl font-semibold text-white mb-3">
             Shipping Delivery Estimates
@@ -112,7 +112,7 @@ export default function Shipping() {
               </tbody>
             </table>
           </div>
-        </section>
+        </section> */}
 
         {/* ADDRESS */}
         <section>

@@ -68,11 +68,11 @@ export default function Home() {
       {/* WHY CHOOSE US */}
       <section className="px-6 md:px-16 py-16 text-center">
         <h2 className="text-2xl md:text-3xl font-bold leading-snug">
-          Elevape Australia — Your Trusted Destination for Premium Vapes
+          Elevape — Your Trusted Destination for Premium Vapes
         </h2>
 
         <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-          Welcome to Elevape Australia, your go-to online store for high-quality, 
+          Welcome to Elevape, your go-to online store for high-quality, 
           innovative vaping products. We offer a carefully curated collection of 
           sleek, reliable, and flavour-rich devices designed for every type of user.
           <br /><br />

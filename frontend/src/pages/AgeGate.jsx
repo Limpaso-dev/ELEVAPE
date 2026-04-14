@@ -20,7 +20,7 @@ export default function AgeGate({ onVerify }) {
         
         {/* TITLE */}
         <h1 className="text-2xl font-bold gradient-text mb-4">
-          Elevape Australia
+          Elevape
         </h1>
 
         {/* MESSAGE */}
