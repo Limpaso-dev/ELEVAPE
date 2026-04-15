@@ -21,7 +21,7 @@ export default function Navbar() {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/login");
-    window.location.reload();
+    // window.location.reload();
   };
 
   // helper for active link
