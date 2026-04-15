@@ -1,37 +1,56 @@
 import { useState } from "react";
-import API from "../services/api";
+
+const BASE_URL = "https://elevape.onrender.com";
 
 function Login() {
   const [form, setForm] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const submit = async () => {
-    const res = await fetch(`${API}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data);
+    if (!form.email || !form.password) {
+      alert("Please fill in all fields");
       return;
     }
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    try {
+      setLoading(true);
 
-    // ✅ Role-based redirect
-    if (data.user.isAdmin) {
-      window.location.href = "/admin";
-    } else {
-      window.location.href = "/";
+      const res = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      // ✅ SAFE JSON HANDLING
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Server error. Please try again.");
+      }
+
+      if (!res.ok) {
+        alert(data || "Login failed");
+        return;
+      }
+
+      // ✅ SAVE AUTH
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ REDIRECT
+      window.location.href = data.user.isAdmin ? "/admin" : "/";
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center mt-20">
-      <div className="glass p-6 w-80">
+    <div className="flex justify-center pt-24 px-4">
+      <div className="glass p-6 w-full max-w-sm">
         <h2 className="text-xl mb-4 text-center">Login</h2>
 
         <input
@@ -53,33 +72,15 @@ function Login() {
 
         <button
           onClick={submit}
-          className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded"
+          disabled={loading}
+          className={`w-full p-2 rounded font-semibold ${
+            loading
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+          }`}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
-
-        {/* ✅ FORGOT PASSWORD */}
-        <p className="text-sm text-center mt-3">
-          <span
-            className="text-accent cursor-pointer hover:underline"
-            onClick={() =>
-              (window.location.href = "/forgot-password")
-            }
-          >
-            Forgot Password?
-          </span>
-        </p>
-
-        {/* REGISTER */}
-        <p className="text-sm text-center mt-2 text-gray-400">
-          Don’t have an account?{" "}
-          <span
-            className="text-accent cursor-pointer"
-            onClick={() => (window.location.href = "/register")}
-          >
-            Register
-          </span>
-        </p>
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../services/api";
 import { useCart } from "../context/CartContext";
+
+const BASE_URL = "https://elevape.onrender.com";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -9,9 +10,16 @@ export default function Products() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${API}/products`)
-      .then((res) => res.json())
-      .then(setProducts);
+    fetch(`${BASE_URL}/api/products`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch products");
+        return res.json();
+      })
+      .then(setProducts)
+      .catch((err) => {
+        console.error(err);
+        alert("Failed to load products");
+      });
   }, []);
 
   const handleAddToCart = (product) => {
@@ -35,45 +43,17 @@ export default function Products() {
         {products.map((p) => {
           const price = Number(p.price);
 
-          const compare =
-            p.compareAtPrice && !isNaN(p.compareAtPrice)
-              ? Number(p.compareAtPrice)
-              : null;
-
-          const hasDiscount =
-            compare !== null && compare > price;
-
-          const discountPercent = hasDiscount
-            ? Math.round(((compare - price) / compare) * 100)
-            : 0;
-
           return (
             <div
               key={p._id}
               className="glass p-4 rounded-xl transition transform hover:-translate-y-2 hover:shadow-xl"
             >
               {/* IMAGE */}
-              <div className="relative bg-black/30 rounded-lg p-4 flex items-center justify-center h-52 overflow-hidden">
-
-                {hasDiscount && (
-                  <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
-                    SALE
-                  </span>
-                )}
-
-                {!p.inStock && (
-                  <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-10">
-                    <span className="text-red-400 font-bold text-lg">
-                      Out of Stock
-                    </span>
-                  </div>
-                )}
-
-                {/* ✅ FINAL FIX */}
+              <div className="bg-black/30 rounded-lg p-4 flex items-center justify-center h-52 overflow-hidden">
                 <img
-                  src={`http://localhost:5000${p.image}`}
+                  src={`${BASE_URL}${p.image}`}
                   alt={p.name}
-                  className="h-full object-cover transition duration-300 hover:scale-110"
+                  className="h-full object-cover"
                 />
               </div>
 
@@ -87,34 +67,15 @@ export default function Products() {
                   {p.description || "Premium quality product"}
                 </p>
 
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-xl font-bold text-accent">
-                    {price} AUD
-                  </span>
-
-                  {hasDiscount && (
-                    <span className="text-gray-400 line-through text-sm">
-                      {compare} AUD
-                    </span>
-                  )}
-                </div>
-
-                {hasDiscount && (
-                  <p className="text-green-500 text-sm">
-                    {discountPercent}% OFF
-                  </p>
-                )}
+                <p className="text-xl font-bold text-accent mt-2">
+                  ${price}
+                </p>
 
                 <button
-                  disabled={!p.inStock}
                   onClick={() => handleAddToCart(p)}
-                  className={`mt-3 w-full p-2 rounded-lg font-semibold transition ${
-                    p.inStock
-                      ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90"
-                      : "bg-gray-600 cursor-not-allowed"
-                  }`}
+                  className="mt-3 w-full bg-gradient-to-r from-primary to-secondary p-2 rounded font-semibold hover:opacity-90"
                 >
-                  {p.inStock ? "Add to Cart" : "Out of Stock"}
+                  Add to Cart
                 </button>
               </div>
             </div>

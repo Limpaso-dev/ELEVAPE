@@ -11,30 +11,48 @@ function CartProvider({ children }) {
 
   const [cart, setCart] = useState([]);
 
-  // 🔁 Load cart when user changes
+  // 🔁 ALWAYS SYNC USER + CART
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    setUser(storedUser);
+    const syncUser = () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      setUser(storedUser);
 
-    if (storedUser?._id) {
-      const savedCart = localStorage.getItem(`cart_${storedUser._id}`);
-      setCart(savedCart ? JSON.parse(savedCart) : []);
-    } else {
-      setCart([]);
-    }
+      if (storedUser?._id) {
+        const savedCart = localStorage.getItem(
+          `cart_${storedUser._id}`
+        );
+        setCart(savedCart ? JSON.parse(savedCart) : []);
+      } else {
+        setCart([]);
+      }
+    };
+
+    syncUser();
+
+    // 🔥 LISTEN TO LOGIN/LOGOUT CHANGES
+    window.addEventListener("storage", syncUser);
+
+    return () => {
+      window.removeEventListener("storage", syncUser);
+    };
   }, []);
 
-  // 💾 Save cart per user
+  // 💾 SAVE CART PER USER
   useEffect(() => {
     if (user?._id) {
-      localStorage.setItem(`cart_${user._id}`, JSON.stringify(cart));
+      localStorage.setItem(
+        `cart_${user._id}`,
+        JSON.stringify(cart)
+      );
     }
   }, [cart, user]);
 
   // ➕ ADD TO CART
   const addToCart = (product) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item._id === product._id);
+      const existing = prev.find(
+        (item) => item._id === product._id
+      );
 
       if (existing) {
         return prev.map((item) =>
@@ -74,7 +92,9 @@ function CartProvider({ children }) {
 
   // ❌ REMOVE
   const removeFromCart = (id) => {
-    setCart((prev) => prev.filter((item) => item._id !== id));
+    setCart((prev) =>
+      prev.filter((item) => item._id !== id)
+    );
   };
 
   // 🧹 CLEAR

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import API from "../services/api";
+
+const BASE_URL = "https://elevape.onrender.com";
 
 function Admin() {
   const [product, setProduct] = useState({
@@ -17,18 +18,35 @@ function Admin() {
 
   const token = localStorage.getItem("token");
 
+  // ✅ PRODUCTS
   const fetchProducts = async () => {
-    const res = await fetch(`${API}/products`);
-    const data = await res.json();
-    setProducts(data);
+    try {
+      const res = await fetch(`${BASE_URL}/api/products`);
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load products");
+    }
   };
 
+  // ✅ ORDERS (PROTECTED)
   const fetchOrders = async () => {
-    const res = await fetch(`${API}/orders`, {
-      headers: { Authorization: token },
-    });
-    const data = await res.json();
-    setOrders(data);
+    try {
+      if (!token) return;
+
+      const res = await fetch(`${BASE_URL}/api/orders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to load orders");
+    }
   };
 
   useEffect(() => {
@@ -45,75 +63,94 @@ function Admin() {
 
   // ➕ ADD PRODUCT
   const addProduct = async () => {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    formData.append("name", product.name);
-    formData.append("price", Number(product.price));
-    formData.append(
-      "compareAtPrice",
-      product.compareAtPrice ? Number(product.compareAtPrice) : ""
-    );
-    formData.append("description", product.description);
-    formData.append("image", product.image);
+      formData.append("name", product.name);
+      formData.append("price", Number(product.price));
+      formData.append(
+        "compareAtPrice",
+        product.compareAtPrice ? Number(product.compareAtPrice) : ""
+      );
+      formData.append("description", product.description);
+      formData.append("image", product.image);
+      formData.append("inStock", product.inStock);
 
-    // ✅ FIXED
-    formData.append("inStock", product.inStock);
+      await fetch(`${BASE_URL}/api/products`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-    await fetch(`${API}/products`, {
-      method: "POST",
-      headers: { Authorization: token },
-      body: formData,
-    });
+      setProduct({
+        name: "",
+        price: "",
+        compareAtPrice: "",
+        description: "",
+        inStock: true,
+        image: null,
+      });
 
-    setProduct({
-      name: "",
-      price: "",
-      compareAtPrice: "",
-      description: "",
-      inStock: true,
-      image: null,
-    });
-
-    setPreview(null);
-    fetchProducts();
+      setPreview(null);
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add product");
+    }
   };
 
   // ❌ DELETE
   const deleteProduct = async (id) => {
-    await fetch(`${API}/products/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: token },
-    });
-
-    fetchProducts();
-  };
-
-  // 🔄 TOGGLE STOCK (🔥 NEW FEATURE)
-  const toggleStock = async (id, currentStock) => {
-    await fetch(`${API}/products/${id}/stock`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({
-        inStock: !currentStock,
-      }),
-    });
-
-    fetchProducts();
-  };
-
-  const updateStatus = async (id, status) => {
     try {
-      const res = await fetch(`${API}/orders/status/${id}`, {
+      await fetch(`${BASE_URL}/api/products/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      fetchProducts();
+    } catch (err) {
+      alert("Failed to delete product");
+    }
+  };
+
+  // 🔄 TOGGLE STOCK
+  const toggleStock = async (id, currentStock) => {
+    try {
+      await fetch(`${BASE_URL}/api/products/${id}/stock`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({
+          inStock: !currentStock,
+        }),
       });
+
+      fetchProducts();
+    } catch (err) {
+      alert("Failed to update stock");
+    }
+  };
+
+  // 🔄 UPDATE ORDER STATUS
+  const updateStatus = async (id, status) => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/orders/status/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status }),
+        }
+      );
 
       if (!res.ok) {
         const data = await res.json();
@@ -129,7 +166,6 @@ function Admin() {
 
   return (
     <div className="p-6 space-y-10">
-
       <h1 className="text-3xl font-bold gradient-text">
         Admin Dashboard
       </h1>
@@ -150,7 +186,7 @@ function Admin() {
 
           <input
             value={product.price}
-            placeholder="Price (AUD)"
+            placeholder="Price ($)"
             type="number"
             className="w-full p-2 bg-black/40 rounded"
             onChange={(e) =>
@@ -189,7 +225,6 @@ function Admin() {
             }
           />
 
-          {/* ✅ STOCK CHECKBOX */}
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -222,19 +257,17 @@ function Admin() {
         <div className="grid md:grid-cols-3 gap-6">
           {products.map((p) => (
             <div key={p._id} className="glass p-4">
-
               <img
-                src={`http://localhost:5000${p.image}`}
+                src={`${BASE_URL}${p.image}`}
                 className="h-32 mx-auto object-contain"
               />
 
               <h3 className="mt-2 text-lg">{p.name}</h3>
 
               <p className="text-accent font-semibold">
-                {p.price} AUD
+                ${p.price}
               </p>
 
-              {/* ✅ STOCK STATUS */}
               <p
                 className={`mt-1 text-sm ${
                   p.inStock ? "text-green-400" : "text-red-400"
@@ -243,7 +276,6 @@ function Admin() {
                 {p.inStock ? "In Stock" : "Out of Stock"}
               </p>
 
-              {/* 🔄 TOGGLE STOCK */}
               <button
                 onClick={() => toggleStock(p._id, p.inStock)}
                 className="mt-2 w-full bg-yellow-700 p-2 rounded text-sm"
@@ -262,7 +294,7 @@ function Admin() {
         </div>
       </div>
 
-      {/* ORDERS (UNCHANGED) */}
+      {/* ORDERS */}
       <div>
         <h2 className="text-xl mb-4">Orders</h2>
 
@@ -270,7 +302,7 @@ function Admin() {
           {orders.map((o) => (
             <div key={o._id} className="glass p-4 space-y-2">
               <p>Order ID: {o._id}</p>
-              <p>Total: {o.total} AUD</p>
+              <p>Total: ${o.total}</p>
 
               <div className="flex gap-2">
                 <button
@@ -291,7 +323,6 @@ function Admin() {
           ))}
         </div>
       </div>
-
     </div>
   );
 }

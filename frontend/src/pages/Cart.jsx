@@ -1,6 +1,7 @@
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
-import API from "../services/api";
+
+const BASE_URL = "https://elevape.onrender.com";
 
 export default function Cart() {
   const {
@@ -15,12 +16,11 @@ export default function Cart() {
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // 🔒 OPTIONAL: prevent access if not logged in
+  // ✅ FIX: redirect safely
   if (!user) {
-    navigate("/login");
+    setTimeout(() => navigate("/login"), 0);
   }
 
-  // TOTAL
   const total = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
@@ -47,7 +47,7 @@ export default function Cart() {
                 {/* IMAGE */}
                 <div className="w-24 h-24 rounded-lg overflow-hidden bg-black/30">
                   <img
-                    src={`${API}${c.image}`}
+                    src={`${BASE_URL}${c.image}`}
                     alt={c.name}
                     className="w-full h-full object-cover"
                   />
@@ -60,10 +60,9 @@ export default function Cart() {
                   </h2>
 
                   <p className="text-accent font-bold mt-1">
-                    {c.price} AUD
+                    ${c.price}
                   </p>
 
-                  {/* QUANTITY */}
                   <div className="flex items-center gap-3 mt-2">
                     <button
                       onClick={() => decreaseQty(c._id)}
@@ -85,7 +84,6 @@ export default function Cart() {
                   </div>
                 </div>
 
-                {/* REMOVE */}
                 <button
                   onClick={() => removeFromCart(c._id)}
                   className="text-red-400 hover:text-red-600 text-sm"
@@ -111,7 +109,7 @@ export default function Cart() {
 
             <div className="flex justify-between mb-4 text-gray-400">
               <span>Total</span>
-              <span>{total.toFixed(2)} AUD</span>
+              <span>${total.toFixed(2)}</span>
             </div>
 
             <hr className="border-white/20 mb-4" />
@@ -119,11 +117,10 @@ export default function Cart() {
             <div className="flex justify-between text-lg font-bold mb-6">
               <span>Grand Total</span>
               <span className="text-accent">
-                {total.toFixed(2)} AUD
+                ${total.toFixed(2)}
               </span>
             </div>
 
-            {/* CHECKOUT */}
             <button
               onClick={() => navigate("/checkout")}
               className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded font-semibold hover:opacity-90"
@@ -131,7 +128,6 @@ export default function Cart() {
               Proceed to Checkout
             </button>
 
-            {/* CLEAR CART (optional but useful) */}
             <button
               onClick={clearCart}
               className="w-full mt-3 border border-red-400 text-red-400 p-2 rounded hover:bg-red-400 hover:text-white transition"
