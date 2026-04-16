@@ -18,19 +18,19 @@ function Admin() {
 
   const token = localStorage.getItem("token");
 
-  // ✅ PRODUCTS
+  // ================= PRODUCTS =================
   const fetchProducts = async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/products`);
       const data = await res.json();
-      setProducts(data);
+      setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
       alert("Failed to load products");
     }
   };
 
-  // ✅ ORDERS (PROTECTED)
+  // ================= ORDERS =================
   const fetchOrders = async () => {
     try {
       if (!token) return;
@@ -42,7 +42,7 @@ function Admin() {
       });
 
       const data = await res.json();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
       alert("Failed to load orders");
@@ -61,7 +61,7 @@ function Admin() {
     if (file) setPreview(URL.createObjectURL(file));
   };
 
-  // ➕ ADD PRODUCT
+  // ================= ADD PRODUCT =================
   const addProduct = async () => {
     try {
       const formData = new FormData();
@@ -101,7 +101,7 @@ function Admin() {
     }
   };
 
-  // ❌ DELETE
+  // ================= DELETE PRODUCT =================
   const deleteProduct = async (id) => {
     try {
       await fetch(`${BASE_URL}/api/products/${id}`, {
@@ -117,7 +117,7 @@ function Admin() {
     }
   };
 
-  // 🔄 TOGGLE STOCK
+  // ================= TOGGLE STOCK =================
   const toggleStock = async (id, currentStock) => {
     try {
       await fetch(`${BASE_URL}/api/products/${id}/stock`, {
@@ -137,7 +137,7 @@ function Admin() {
     }
   };
 
-  // 🔄 UPDATE ORDER STATUS
+  // ================= UPDATE ORDER STATUS =================
   const updateStatus = async (id, status) => {
     try {
       const res = await fetch(
@@ -170,7 +170,7 @@ function Admin() {
         Admin Dashboard
       </h1>
 
-      {/* ADD PRODUCT */}
+      {/* ================= ADD PRODUCT ================= */}
       <div className="glass p-6 max-w-xl">
         <h2 className="text-xl mb-4">Add Product</h2>
 
@@ -250,7 +250,7 @@ function Admin() {
         </div>
       </div>
 
-      {/* PRODUCTS */}
+      {/* ================= PRODUCTS ================= */}
       <div>
         <h2 className="text-xl mb-4">Products</h2>
 
@@ -294,16 +294,70 @@ function Admin() {
         </div>
       </div>
 
-      {/* ORDERS */}
+      {/* ================= ORDERS ================= */}
       <div>
         <h2 className="text-xl mb-4">Orders</h2>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {orders.map((o) => (
-            <div key={o._id} className="glass p-4 space-y-2">
-              <p>Order ID: {o._id}</p>
-              <p>Total: ${o.total}</p>
+            <div key={o._id} className="glass p-5 space-y-4">
 
+              <div className="flex justify-between">
+                <p className="text-sm text-gray-400">
+                  Order ID: {o._id}
+                </p>
+                <span className="text-xs bg-gray-700 px-2 py-1 rounded">
+                  {o.status}
+                </span>
+              </div>
+
+              {/* CUSTOMER */}
+              <div className="text-sm text-gray-300">
+                <p className="font-semibold">
+                  {o.shippingAddress?.firstName}{" "}
+                  {o.shippingAddress?.lastName}
+                </p>
+                <p>{o.shippingAddress?.address}</p>
+                <p>
+                  {o.shippingAddress?.suburb},{" "}
+                  {o.shippingAddress?.state}
+                </p>
+                <p>{o.shippingAddress?.postcode}</p>
+                <p>📞 {o.shippingAddress?.phone}</p>
+                <p>✉️ {o.shippingAddress?.email}</p>
+              </div>
+
+              {/* ITEMS */}
+              <div className="border-t border-white/10 pt-2 text-sm">
+                {o.items?.map((item, i) => (
+                  <div key={i} className="flex justify-between">
+                    <span>
+                      {item.name} x {item.quantity}
+                    </span>
+                    <span>
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* TOTALS */}
+              <div className="border-t border-white/10 pt-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Subtotal</span>
+                  <span>${o.subtotal || 0}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping</span>
+                  <span>${o.shipping || 0}</span>
+                </div>
+                <div className="flex justify-between font-bold text-accent">
+                  <span>Total</span>
+                  <span>${o.total}</span>
+                </div>
+              </div>
+
+              {/* ACTIONS */}
               <div className="flex gap-2">
                 <button
                   onClick={() => updateStatus(o._id, "shipped")}
@@ -317,6 +371,13 @@ function Admin() {
                   className="bg-green-500 px-3 py-1 rounded text-sm"
                 >
                   Delivered
+                </button>
+
+                <button
+                  onClick={() => updateStatus(o._id, "cancelled")}
+                  className="bg-red-500 px-3 py-1 rounded text-sm"
+                >
+                  Cancel
                 </button>
               </div>
             </div>

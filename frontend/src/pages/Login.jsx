@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "https://elevape.onrender.com";
 
 function Login() {
   const [form, setForm] = useState({});
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const submit = async () => {
     if (!form.email || !form.password) {
@@ -21,7 +24,6 @@ function Login() {
         body: JSON.stringify(form),
       });
 
-      // ✅ SAFE JSON HANDLING
       let data;
       try {
         data = await res.json();
@@ -53,6 +55,7 @@ function Login() {
       <div className="glass p-6 w-full max-w-sm">
         <h2 className="text-xl mb-4 text-center">Login</h2>
 
+        {/* EMAIL */}
         <input
           placeholder="Email"
           className="w-full p-2 mb-3 bg-black/40 rounded"
@@ -61,6 +64,7 @@ function Login() {
           }
         />
 
+        {/* PASSWORD */}
         <input
           placeholder="Password"
           type="password"
@@ -70,6 +74,7 @@ function Login() {
           }
         />
 
+        {/* LOGIN BUTTON */}
         <button
           onClick={submit}
           disabled={loading}
@@ -81,6 +86,14 @@ function Login() {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+
+        {/* FORGOT PASSWORD */}
+        <p
+          onClick={() => navigate("/forgot-password")}
+          className="text-sm text-blue-400 cursor-pointer mt-3 hover:underline text-center"
+        >
+          Forgot Password?
+        </p>
       </div>
     </div>
   );
