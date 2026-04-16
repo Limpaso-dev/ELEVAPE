@@ -1,11 +1,14 @@
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const BASE_URL = "https://elevape.onrender.com";
 
 export default function Cart() {
   const {
     cart,
+    subtotal,
+    totalItems,
     increaseQty,
     decreaseQty,
     removeFromCart,
@@ -13,18 +16,19 @@ export default function Cart() {
   } = useCart();
 
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // ✅ FIX: redirect safely
-  if (!user) {
-    setTimeout(() => navigate("/login"), 0);
-  }
+  // ✅ FIXED: proper redirect
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  // ✅ SAME SHIPPING LOGIC AS CHECKOUT
+  const SHIPPING_FEE = 30;
+  const shipping = cart.length > 0 ? SHIPPING_FEE : 0;
+  const total = subtotal + shipping;
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -37,7 +41,7 @@ export default function Cart() {
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
 
-          {/* ITEMS */}
+          {/* ================= ITEMS ================= */}
           <div className="md:col-span-2 space-y-4">
             {cart.map((c) => (
               <div
@@ -94,7 +98,7 @@ export default function Cart() {
             ))}
           </div>
 
-          {/* SUMMARY */}
+          {/* ================= SUMMARY ================= */}
           <div className="glass p-6 h-fit">
             <h2 className="text-xl font-semibold mb-4">
               Order Summary
@@ -102,20 +106,23 @@ export default function Cart() {
 
             <div className="flex justify-between mb-2 text-gray-400">
               <span>Items</span>
-              <span>
-                {cart.reduce((a, b) => a + b.quantity, 0)}
-              </span>
+              <span>{totalItems}</span>
+            </div>
+
+            <div className="flex justify-between mb-2 text-gray-400">
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
 
             <div className="flex justify-between mb-4 text-gray-400">
-              <span>Total</span>
-              <span>${total.toFixed(2)}</span>
+              <span>Shipping</span>
+              <span>${shipping.toFixed(2)}</span>
             </div>
 
             <hr className="border-white/20 mb-4" />
 
             <div className="flex justify-between text-lg font-bold mb-6">
-              <span>Grand Total</span>
+              <span>Total</span>
               <span className="text-accent">
                 ${total.toFixed(2)}
               </span>

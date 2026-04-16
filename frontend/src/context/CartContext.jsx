@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 
 const CartContext = createContext();
 
@@ -11,16 +11,14 @@ function CartProvider({ children }) {
 
   const [cart, setCart] = useState([]);
 
-  // 🔁 ALWAYS SYNC USER + CART
+  // 🔁 SYNC USER + CART
   useEffect(() => {
     const syncUser = () => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       setUser(storedUser);
 
       if (storedUser?._id) {
-        const savedCart = localStorage.getItem(
-          `cart_${storedUser._id}`
-        );
+        const savedCart = localStorage.getItem(`cart_${storedUser._id}`);
         setCart(savedCart ? JSON.parse(savedCart) : []);
       } else {
         setCart([]);
@@ -28,8 +26,6 @@ function CartProvider({ children }) {
     };
 
     syncUser();
-
-    // 🔥 LISTEN TO LOGIN/LOGOUT CHANGES
     window.addEventListener("storage", syncUser);
 
     return () => {
@@ -40,19 +36,25 @@ function CartProvider({ children }) {
   // 💾 SAVE CART PER USER
   useEffect(() => {
     if (user?._id) {
-      localStorage.setItem(
-        `cart_${user._id}`,
-        JSON.stringify(cart)
-      );
+      localStorage.setItem(`cart_${user._id}`, JSON.stringify(cart));
     }
   }, [cart, user]);
+
+  // 🧠 DERIVED VALUES (IMPORTANT)
+  const subtotal = useMemo(() => {
+    return cart.reduce((acc, item) => {
+      return acc + item.price * item.quantity;
+    }, 0);
+  }, [cart]);
+
+  const totalItems = useMemo(() => {
+    return cart.reduce((acc, item) => acc + item.quantity, 0);
+  }, [cart]);
 
   // ➕ ADD TO CART
   const addToCart = (product) => {
     setCart((prev) => {
-      const existing = prev.find(
-        (item) => item._id === product._id
-      );
+      const existing = prev.find((item) => item._id === product._id);
 
       if (existing) {
         return prev.map((item) =>
@@ -92,9 +94,7 @@ function CartProvider({ children }) {
 
   // ❌ REMOVE
   const removeFromCart = (id) => {
-    setCart((prev) =>
-      prev.filter((item) => item._id !== id)
-    );
+    setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
   // 🧹 CLEAR
@@ -109,6 +109,8 @@ function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         cart,
+        subtotal,     // 🔥 NEW
+        totalItems,   // 🔥 NEW
         addToCart,
         increaseQty,
         decreaseQty,
