@@ -3,8 +3,21 @@ const mongoose = require("mongoose");
 const orderSchema = new mongoose.Schema({
   userId: String,
 
-  items: Array,
+  // ✅ keep items but slightly structured (no breaking change)
+  items: [
+    {
+      _id: String,
+      name: String,
+      price: Number,
+      quantity: Number,
+    },
+  ],
 
+  // ✅ NEW (for proper breakdown)
+  subtotal: Number,
+  shipping: Number,
+
+  // ✅ keep total (no change)
   total: Number,
 
   status: {
@@ -12,7 +25,7 @@ const orderSchema = new mongoose.Schema({
     default: "pending",
   },
 
-  // ✅ NEW: SHIPPING ADDRESS
+  // ✅ SHIPPING ADDRESS (unchanged, already correct)
   shippingAddress: {
     firstName: String,
     lastName: String,

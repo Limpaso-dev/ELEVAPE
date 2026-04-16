@@ -8,15 +8,23 @@ const orderRoutes = require("./routes/orders");
 connectDB();
 
 const app = express();
-app.use(cors());
+
+// ✅ CORS (production-ready)
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://your-app.vercel.app"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
+// ✅ ROUTES
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/products", require("./routes/products"));
-app.use("/api/orders", require("./routes/orders"));
 app.use("/api/orders", orderRoutes);
 
-// serve images
+// ✅ serve images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(process.env.PORT, () =>

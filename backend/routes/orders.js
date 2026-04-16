@@ -6,12 +6,14 @@ const axios = require("axios");
 // ➕ CREATE ORDER + INITIATE PAYMENT
 router.post("/", auth, async (req, res) => {
   try {
-    const { items, total, shippingAddress } = req.body;
+    const { items, subtotal, shipping, total, shippingAddress } = req.body;
 
-    // ✅ Create order first
+    // ✅ Create order first (NOW WITH FULL DATA)
     const order = await Order.create({
       userId: req.user.id,
       items,
+      subtotal,
+      shipping,
       total,
       shippingAddress,
       status: "pending",
@@ -24,13 +26,16 @@ router.post("/", auth, async (req, res) => {
         tx_ref: "order-" + order._id,
         amount: total,
         currency: "AUD",
-        redirect_url: "http://localhost:5173/payment-success",
+
+        // ⚠️ IMPORTANT: change this after deployment
+        redirect_url: "https://your-frontend.vercel.app/payment-success",
+
         customer: {
           email: req.user.email,
           name: req.user.name || "Customer",
         },
         customizations: {
-          title: "Your Store",
+          title: "Elevape",
           description: "Payment for your order",
         },
       },
@@ -45,7 +50,7 @@ router.post("/", auth, async (req, res) => {
     res.json({
       message: "Order created",
       order,
-      paymentLink: flwRes.data.data.link, // ✅ REAL PAYMENT LINK
+      paymentLink: flwRes.data.data.link,
     });
   } catch (err) {
     console.error(err.response?.data || err.message);
