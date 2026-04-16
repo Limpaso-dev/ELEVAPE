@@ -6,116 +6,91 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = JSON.parse(localStorage.getItem("user"));
-  const { cart } = useCart();
+  const { totalItems } = useCart();
 
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
+    const handleScroll = () => setScrolled(window.scrollY > 30);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.clear();
     navigate("/login");
-    // window.location.reload();
   };
 
-  // helper for active link
-  const linkStyle = (path) =>
-    `relative pb-1 transition ${
-      location.pathname === path ? "text-white" : "text-gray-300"
-    }`;
-
-  const underline = (path) =>
-    location.pathname === path && (
-      <span className="absolute left-0 bottom-0 w-full h-[2px] bg-white rounded-full"></span>
-    );
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-black/90 backdrop-blur-lg shadow-lg"
-          : "bg-black/50 backdrop-blur-md"
+        scrolled ? "bg-black shadow-lg py-3" : "bg-black py-4"
       }`}
     >
-      <div className="flex justify-between items-center px-6 md:px-16 py-4 text-white">
+      {/* ================= TOP ================= */}
+      <div className="flex justify-between items-center px-6 md:px-16 text-white">
 
         {/* LOGO */}
         <div
           onClick={() => navigate("/")}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2 cursor-pointer"
         >
-          <img
-            src="/images/Elevape logo.png"
-            alt="Elevape Logo"
-            className="h-9 w-auto object-contain group-hover:scale-105 transition"
-          />
-          <span className="text-lg md:text-xl font-semibold tracking-wide group-hover:text-gray-300 transition">
-            Elevape
-          </span>
+          <img src="/images/Elevape logo.png" className="h-8" />
+          <span className="text-lg font-semibold">Elevape</span>
         </div>
 
-        {/* DESKTOP LINKS */}
-        <div className="hidden md:flex gap-8 items-center text-sm font-medium">
+        {/* ================= DESKTOP ================= */}
+        <div className="hidden md:flex items-center gap-8 text-sm">
 
-          <Link to="/" className={linkStyle("/")}>
-            Home
-            {underline("/")}
-          </Link>
+          {["/", "/products"].map((path, i) => (
+            <Link key={i} to={path} className="relative group">
+              <span className={isActive(path) ? "text-white" : "text-gray-300"}>
+                {path === "/" ? "Home" : "Products"}
+              </span>
 
-          <Link to="/products" className={linkStyle("/products")}>
-            Products
-            {underline("/products")}
-          </Link>
+              <span
+                className={`absolute left-0 -bottom-1 h-[2px] bg-white transition-all duration-300 ${
+                  isActive(path)
+                    ? "w-full"
+                    : "w-0 group-hover:w-full"
+                }`}
+              />
+            </Link>
+          ))}
 
           {user && !user.isAdmin && (
             <>
-              <Link to="/cart" className={linkStyle("/cart")}>
+              <Link to="/cart" className="relative">
                 Cart
-                {underline("/cart")}
-                {cart.length > 0 && (
-                  <span className="absolute -top-2 -right-3 bg-white text-black text-[10px] px-1.5 py-0.5 rounded-full font-semibold">
-                    {cart.length}
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-3 bg-white text-black text-[10px] px-1.5 rounded-full font-semibold">
+                    {totalItems}
                   </span>
                 )}
               </Link>
 
-              <Link to="/orders" className={linkStyle("/orders")}>
-                Orders
-                {underline("/orders")}
-              </Link>
+              <Link to="/orders">Orders</Link>
             </>
           )}
 
-          {user?.isAdmin && (
-            <Link to="/admin" className={linkStyle("/admin")}>
-              Admin
-              {underline("/admin")}
-            </Link>
-          )}
+          {user?.isAdmin && <Link to="/admin">Admin</Link>}
 
           {user ? (
             <button
               onClick={logout}
-              className="bg-white text-black px-4 py-1.5 rounded-lg hover:bg-gray-200 transition font-medium"
+              className="bg-white text-black px-4 py-1.5 rounded-lg"
             >
               Logout
             </button>
           ) : (
             <>
-              <Link to="/login" className={linkStyle("/login")}>
-                Login
-                {underline("/login")}
-              </Link>
-
+              <Link to="/login">Login</Link>
               <Link
                 to="/register"
-                className="bg-white text-black px-4 py-1.5 rounded-lg hover:bg-gray-200 transition font-medium"
+                className="bg-white text-black px-4 py-1.5 rounded-lg"
               >
                 Register
               </Link>
@@ -123,64 +98,81 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* MOBILE BUTTON */}
+        {/* ================= MOBILE BUTTON ================= */}
         <button
-          className="md:hidden text-2xl text-white"
-          onClick={() => setOpen(!open)}
+          className="md:hidden text-2xl"
+          onClick={() => setOpen(true)}
         >
-          {open ? "✕" : "☰"}
+          ☰
         </button>
       </div>
 
-      {/* MOBILE MENU */}
+      {/* ================= MOBILE DRAWER ================= */}
       <div
-        className={`md:hidden transition-all duration-300 overflow-hidden ${
-          open ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+        className={`fixed top-0 right-0 h-45 w-[45%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
+          open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="bg-black/95 backdrop-blur-lg px-6 pb-6 flex flex-col gap-4 text-white text-sm">
+        <div className="p-5 text-white">
 
-          <Link to="/" onClick={() => setOpen(false)}>Home</Link>
-          <Link to="/products" onClick={() => setOpen(false)}>Products</Link>
-
-          {user && !user.isAdmin && (
-            <>
-              <Link to="/cart" onClick={() => setOpen(false)}>
-                Cart ({cart.length})
-              </Link>
-              <Link to="/orders" onClick={() => setOpen(false)}>
-                Orders
-              </Link>
-            </>
-          )}
-
-          {user?.isAdmin && (
-            <Link to="/admin" onClick={() => setOpen(false)}>
-              Admin
-            </Link>
-          )}
-
-          {user ? (
+          {/* CLOSE */}
+          <div className="flex justify-end mb-6">
             <button
-              onClick={logout}
-              className="bg-white text-black px-4 py-2 rounded-lg"
+              className="text-xl"
+              onClick={() => setOpen(false)}
             >
-              Logout
+              ✕
             </button>
-          ) : (
-            <>
-              <Link to="/login" onClick={() => setOpen(false)}>
-                Login
+          </div>
+
+          {/* LINKS */}
+          <div className="flex flex-col gap-4 text-sm">
+            <Link to="/" onClick={() => setOpen(false)}>Home</Link>
+            <Link to="/products" onClick={() => setOpen(false)}>Products</Link>
+
+            {user && !user.isAdmin && (
+              <>
+                <Link to="/cart" onClick={() => setOpen(false)}>
+                  Cart ({totalItems})
+                </Link>
+                <Link to="/orders" onClick={() => setOpen(false)}>
+                  Orders
+                </Link>
+              </>
+            )}
+
+            {user?.isAdmin && (
+              <Link to="/admin" onClick={() => setOpen(false)}>
+                Admin
               </Link>
-              <Link
-                to="/register"
-                onClick={() => setOpen(false)}
-                className="bg-white text-black px-4 py-2 rounded-lg text-center"
+            )}
+          </div>
+
+          {/* ACTIONS */}
+          <div className="mt-6">
+            {user ? (
+              <button
+                onClick={logout}
+                className="w-full bg-white text-black px-4 py-2 rounded-lg text-sm"
               >
-                Register
-              </Link>
-            </>
-          )}
+                Logout
+              </button>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <Link to="/login" onClick={() => setOpen(false)}>
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setOpen(false)}
+                  className="bg-white text-black px-4 py-2 rounded-lg text-center text-sm"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
+
         </div>
       </div>
     </nav>
