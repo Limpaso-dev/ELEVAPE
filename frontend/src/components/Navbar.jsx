@@ -12,7 +12,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 30);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -27,7 +27,7 @@ export default function Navbar() {
   return (
     <nav
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-black shadow-lg py-3" : "bg-black py-4"
+        scrolled ? "bg-black py-2 shadow-md" : "bg-black py-3"
       }`}
     >
       {/* ================= TOP ================= */}
@@ -38,8 +38,10 @@ export default function Navbar() {
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src="/images/Elevape logo.png" className="h-7 md:h-8" />
-          <span className="text-sm md:text-lg font-semibold">Elevape</span>
+          <img src="/images/Elevape logo.png" className="h-6 md:h-8" />
+          <span className="text-sm md:text-lg font-semibold">
+            Elevape
+          </span>
         </div>
 
         {/* ================= DESKTOP ================= */}
@@ -53,9 +55,7 @@ export default function Navbar() {
 
               <span
                 className={`absolute left-0 -bottom-1 h-[2px] bg-white transition-all duration-300 ${
-                  isActive(path)
-                    ? "w-full"
-                    : "w-0 group-hover:w-full"
+                  isActive(path) ? "w-full" : "w-0 group-hover:w-full"
                 }`}
               />
             </Link>
@@ -81,7 +81,7 @@ export default function Navbar() {
           {user ? (
             <button
               onClick={logout}
-              className="bg-white text-black px-4 py-1.5 rounded-lg"
+              className="bg-white text-black px-3 py-1 rounded-lg text-sm"
             >
               Logout
             </button>
@@ -90,7 +90,7 @@ export default function Navbar() {
               <Link to="/login">Login</Link>
               <Link
                 to="/register"
-                className="bg-white text-black px-4 py-1.5 rounded-lg"
+                className="bg-white text-black px-3 py-1 rounded-lg text-sm"
               >
                 Register
               </Link>
@@ -100,7 +100,7 @@ export default function Navbar() {
 
         {/* ================= MOBILE BUTTON ================= */}
         <button
-          className="md:hidden text-2xl"
+          className="md:hidden text-xl"
           onClick={() => setOpen(true)}
         >
           ☰
@@ -109,16 +109,16 @@ export default function Navbar() {
 
       {/* ================= MOBILE DRAWER ================= */}
       <div
-        className={`fixed top-0 right-0 h-screen w-[70%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-screen w-[75%] max-w-[260px] bg-black z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-5 text-white">
+        <div className="p-4 text-white">
 
           {/* CLOSE */}
-          <div className="flex justify-end mb-5">
+          <div className="flex justify-end mb-4">
             <button
-              className="text-xl"
+              className="text-lg"
               onClick={() => setOpen(false)}
             >
               ✕
@@ -126,7 +126,7 @@ export default function Navbar() {
           </div>
 
           {/* LINKS */}
-          <div className="flex flex-col gap-4 text-sm">
+          <div className="flex flex-col gap-3 text-sm">
             <Link to="/" onClick={() => setOpen(false)}>Home</Link>
             <Link to="/products" onClick={() => setOpen(false)}>Products</Link>
 
@@ -149,23 +149,23 @@ export default function Navbar() {
           </div>
 
           {/* ACTIONS */}
-          <div className="mt-6">
+          <div className="mt-5">
             {user ? (
               <button
                 onClick={logout}
-                className="w-full bg-white text-black px-4 py-2 rounded-lg text-sm"
+                className="w-full bg-white text-black px-3 py-2 rounded-md text-sm"
               >
                 Logout
               </button>
             ) : (
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
                 <Link to="/login" onClick={() => setOpen(false)}>
                   Login
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setOpen(false)}
-                  className="bg-white text-black px-4 py-2 rounded-lg text-center text-sm"
+                  className="bg-white text-black px-3 py-2 rounded-md text-center text-sm"
                 >
                   Register
                 </Link>
