@@ -31,15 +31,15 @@ export default function Navbar() {
       }`}
     >
       {/* ================= TOP ================= */}
-      <div className="flex justify-between items-center px-6 md:px-16 text-white">
+      <div className="flex justify-between items-center px-4 md:px-16 text-white">
 
         {/* LOGO */}
         <div
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src="/images/Elevape logo.png" className="h-8" />
-          <span className="text-lg font-semibold">Elevape</span>
+          <img src="/images/Elevape logo.png" className="h-7 md:h-8" />
+          <span className="text-sm md:text-lg font-semibold">Elevape</span>
         </div>
 
         {/* ================= DESKTOP ================= */}
@@ -66,7 +66,7 @@ export default function Navbar() {
               <Link to="/cart" className="relative">
                 Cart
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -right-3 bg-white text-black text-[10px] px-1.5 rounded-full font-semibold">
+                  <span className="absolute -top-2 -right-3 bg-white text-black text-[10px] px-1.5 rounded-full">
                     {totalItems}
                   </span>
                 )}
@@ -109,14 +109,14 @@ export default function Navbar() {
 
       {/* ================= MOBILE DRAWER ================= */}
       <div
-        className={`fixed top-0 right-0 h-45 w-[45%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-screen w-[70%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="p-5 text-white">
 
           {/* CLOSE */}
-          <div className="flex justify-end mb-6">
+          <div className="flex justify-end mb-5">
             <button
               className="text-xl"
               onClick={() => setOpen(false)}

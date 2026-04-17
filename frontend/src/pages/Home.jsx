@@ -6,30 +6,30 @@ export default function Home() {
     <div className="w-full pt-16">
 
       {/* ================= HERO ================= */}
-      <section className="relative h-[38vh] md:h-[48vh] overflow-hidden">
+      <section className="relative h-[32vh] md:h-[48vh] overflow-hidden">
         <img
           src="/images/hero.jpeg"
           alt="hero"
           className="w-full h-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-black/60 flex items-center px-6 md:px-16">
+        <div className="absolute inset-0 bg-black/60 flex items-center px-4 md:px-16">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-white max-w-lg"
+            transition={{ duration: 0.6 }}
+            className="text-white max-w-md"
           >
-            <h1 className="text-2xl md:text-4xl font-bold leading-tight">
+            <h1 className="text-xl md:text-4xl font-bold leading-tight">
               Elevate Your Vaping Experience
             </h1>
 
-            <p className="mt-3 text-sm md:text-base text-gray-300">
-              Premium devices. Bold flavours. Built for performance.
+            <p className="mt-2 text-xs md:text-base text-gray-300">
+              Premium devices. Bold flavours.
             </p>
 
             <Link to="/products">
-              <button className="mt-5 bg-gradient-to-r from-primary to-secondary px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition">
+              <button className="mt-4 bg-gradient-to-r from-primary to-secondary px-4 py-2 rounded-md text-sm font-semibold">
                 Shop Now
               </button>
             </Link>
@@ -38,39 +38,38 @@ export default function Home() {
       </section>
 
       {/* ================= FEATURED PRODUCT ================= */}
-      <section className="px-6 md:px-16 py-16 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold">
+      <section className="px-4 md:px-16 py-10 md:py-16 text-center">
+        <h2 className="text-xl md:text-3xl font-bold">
           Featured Product
         </h2>
 
-        <p className="text-gray-400 text-sm mt-2">
-          Discover one of our most popular choices
+        <p className="text-gray-400 text-xs md:text-sm mt-1">
+          One of our most popular picks
         </p>
 
-        <div className="mt-10 flex justify-center">
-          <div className="glass border border-white/10 rounded-2xl px-6 md:px-10 py-8 w-full max-w-md flex flex-col items-center text-center shadow-lg">
+        <div className="mt-6 flex justify-center">
+          <div className="glass border border-white/10 rounded-xl px-4 md:px-8 py-6 w-full max-w-sm flex flex-col items-center text-center shadow-lg">
 
-            <h3 className="text-xl font-semibold text-white">
+            <h3 className="text-lg font-semibold text-white">
               PRO BAR
             </h3>
 
-            <p className="text-gray-400 text-sm mt-1">
-              10000 PUFFS • Smooth & Long-lasting
+            <p className="text-gray-400 text-xs mt-1">
+              10000 PUFFS
             </p>
 
             <img
               src="/images/PRO BAR.png"
               alt="PRO BAR"
-              className="mt-6 w-[140px] md:w-[180px] object-contain"
+              className="mt-4 w-[110px] md:w-[160px] object-contain"
             />
 
-            <p className="text-gray-400 text-sm mt-4">
-              A premium disposable vape designed for extended use,
-              delivering consistent flavour and smooth performance.
+            <p className="text-gray-400 text-xs md:text-sm mt-3 leading-relaxed">
+              Smooth, long-lasting vape with consistent flavour performance.
             </p>
 
             <Link to="/products">
-              <button className="mt-6 bg-gradient-to-r from-primary to-secondary px-5 py-2.5 rounded-lg text-sm font-semibold hover:opacity-90 transition">
+              <button className="mt-4 bg-gradient-to-r from-primary to-secondary px-4 py-2 rounded-md text-xs md:text-sm font-semibold">
                 View Products
               </button>
             </Link>
@@ -79,18 +78,15 @@ export default function Home() {
       </section>
 
       {/* ================= ABOUT ================= */}
-      <section className="px-6 md:px-16 pb-16 text-center">
-        <h2 className="text-2xl md:text-3xl font-bold">
-          Elevape — Premium Vaping Redefined
+      <section className="px-4 md:px-16 pb-10 md:pb-16 text-center">
+        <h2 className="text-xl md:text-3xl font-bold">
+          Elevape — Premium Vaping
         </h2>
 
-        <p className="mt-6 text-gray-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed">
-          Elevape delivers high-quality vaping devices designed for performance,
-          reliability, and bold flavour experiences. Whether you're new or experienced,
-          our curated selection ensures consistency and satisfaction.
-          <br /><br />
-          Enjoy smooth fruity blends, icy hits, and a seamless shopping experience
-          built around quality and trust.
+        <p className="mt-4 text-gray-400 max-w-xl mx-auto text-xs md:text-base leading-relaxed">
+          Elevape offers high-quality vaping devices built for performance and
+          bold flavour experiences. Whether you're new or experienced, enjoy
+          smooth blends and a seamless shopping experience.
         </p>
       </section>
 
