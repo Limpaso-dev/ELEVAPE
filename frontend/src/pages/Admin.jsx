@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-
-const BASE_URL = "https://elevape.onrender.com";
+import { API, BASE_URL } from "../services/api";
 
 function Admin() {
   const [product, setProduct] = useState({
@@ -16,12 +15,14 @@ function Admin() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
 
-  const token = localStorage.getItem("token");
+  // ✅ FIXED TOKEN SOURCE
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user?.token;
 
   // ================= PRODUCTS =================
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/products`);
+      const res = await fetch(`${API}/products`);
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -33,15 +34,29 @@ function Admin() {
   // ================= ORDERS =================
   const fetchOrders = async () => {
     try {
-      if (!token) return;
+      if (!token) {
+        console.log("No token found");
+        return;
+      }
 
-      const res = await fetch(`${BASE_URL}/api/orders`, {
+      const res = await fetch(`${API}/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      console.log("Orders status:", res.status);
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error(err);
+        alert("Failed to load orders");
+        return;
+      }
+
       const data = await res.json();
+      console.log("Orders data:", data);
+
       setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
@@ -54,6 +69,7 @@ function Admin() {
     fetchOrders();
   }, []);
 
+  // ================= IMAGE HANDLER =================
   const handleImage = (e) => {
     const file = e.target.files[0];
     setProduct({ ...product, image: file });
@@ -64,6 +80,11 @@ function Admin() {
   // ================= ADD PRODUCT =================
   const addProduct = async () => {
     try {
+      if (!product.image) {
+        alert("Please select an image");
+        return;
+      }
+
       const formData = new FormData();
 
       formData.append("name", product.name);
@@ -76,7 +97,7 @@ function Admin() {
       formData.append("image", product.image);
       formData.append("inStock", product.inStock);
 
-      await fetch(`${BASE_URL}/api/products`, {
+      const res = await fetch(`${API}/products`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -84,6 +105,13 @@ function Admin() {
         body: formData,
       });
 
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err);
+        return;
+      }
+
+      // reset form
       setProduct({
         name: "",
         price: "",
@@ -104,7 +132,7 @@ function Admin() {
   // ================= DELETE PRODUCT =================
   const deleteProduct = async (id) => {
     try {
-      await fetch(`${BASE_URL}/api/products/${id}`, {
+      await fetch(`${API}/products/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -120,7 +148,7 @@ function Admin() {
   // ================= TOGGLE STOCK =================
   const toggleStock = async (id, currentStock) => {
     try {
-      await fetch(`${BASE_URL}/api/products/${id}/stock`, {
+      await fetch(`${API}/products/${id}/stock`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -140,17 +168,14 @@ function Admin() {
   // ================= UPDATE ORDER STATUS =================
   const updateStatus = async (id, status) => {
     try {
-      const res = await fetch(
-        `${BASE_URL}/api/orders/status/${id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ status }),
-        }
-      );
+      const res = await fetch(`${API}/orders/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status }),
+      });
 
       if (!res.ok) {
         const data = await res.json();
@@ -260,6 +285,7 @@ function Admin() {
               <img
                 src={`${BASE_URL}${p.image}`}
                 className="h-32 mx-auto object-contain"
+                alt={p.name}
               />
 
               <h3 className="mt-2 text-lg">{p.name}</h3>
@@ -301,7 +327,6 @@ function Admin() {
         <div className="space-y-6">
           {orders.map((o) => (
             <div key={o._id} className="glass p-5 space-y-4">
-
               <div className="flex justify-between">
                 <p className="text-sm text-gray-400">
                   Order ID: {o._id}
@@ -311,7 +336,6 @@ function Admin() {
                 </span>
               </div>
 
-              {/* CUSTOMER */}
               <div className="text-sm text-gray-300">
                 <p className="font-semibold">
                   {o.shippingAddress?.firstName}{" "}
@@ -327,7 +351,6 @@ function Admin() {
                 <p>✉️ {o.shippingAddress?.email}</p>
               </div>
 
-              {/* ITEMS */}
               <div className="border-t border-white/10 pt-2 text-sm">
                 {o.items?.map((item, i) => (
                   <div key={i} className="flex justify-between">
@@ -341,23 +364,13 @@ function Admin() {
                 ))}
               </div>
 
-              {/* TOTALS */}
               <div className="border-t border-white/10 pt-2 text-sm">
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span>${o.subtotal || 0}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span>${o.shipping || 0}</span>
-                </div>
-                <div className="flex justify-between font-bold text-accent">
                   <span>Total</span>
-                  <span>${o.total}</span>
+                  <span className="text-accent">${o.total}</span>
                 </div>
               </div>
 
-              {/* ACTIONS */}
               <div className="flex gap-2">
                 <button
                   onClick={() => updateStatus(o._id, "shipped")}

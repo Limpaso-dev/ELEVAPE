@@ -1,8 +1,7 @@
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
-const BASE_URL = "https://elevape.onrender.com";
+import { BASE_URL } from "../services/api";
 
 export default function Cart() {
   const {
@@ -18,14 +17,10 @@ export default function Cart() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // ✅ FIXED: proper redirect
   useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
+    if (!user) navigate("/login");
   }, [user, navigate]);
 
-  // ✅ SAME SHIPPING LOGIC AS CHECKOUT
   const SHIPPING_FEE = 30;
   const shipping = cart.length > 0 ? SHIPPING_FEE : 0;
   const total = subtotal + shipping;
@@ -41,15 +36,12 @@ export default function Cart() {
       ) : (
         <div className="grid md:grid-cols-3 gap-6">
 
-          {/* ================= ITEMS ================= */}
+          {/* ITEMS */}
           <div className="md:col-span-2 space-y-4">
             {cart.map((c) => (
-              <div
-                key={c._id}
-                className="glass p-4 flex gap-4 items-center"
-              >
-                {/* IMAGE */}
-                <div className="w-24 h-24 rounded-lg overflow-hidden bg-black/30">
+              <div key={c._id} className="glass p-4 flex gap-4">
+
+                <div className="w-24 h-24 bg-black/30 rounded overflow-hidden">
                   <img
                     src={`${BASE_URL}${c.image}`}
                     alt={c.name}
@@ -57,88 +49,39 @@ export default function Cart() {
                   />
                 </div>
 
-                {/* DETAILS */}
                 <div className="flex-1">
-                  <h2 className="text-lg font-semibold">
-                    {c.name}
-                  </h2>
+                  <h2>{c.name}</h2>
+                  <p className="text-accent">${c.price}</p>
 
-                  <p className="text-accent font-bold mt-1">
-                    ${c.price}
-                  </p>
-
-                  <div className="flex items-center gap-3 mt-2">
-                    <button
-                      onClick={() => decreaseQty(c._id)}
-                      className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
-                    >
-                      −
-                    </button>
-
-                    <span className="font-semibold">
-                      {c.quantity}
-                    </span>
-
-                    <button
-                      onClick={() => increaseQty(c._id)}
-                      className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600"
-                    >
-                      +
-                    </button>
+                  <div className="flex gap-2 mt-2">
+                    <button onClick={() => decreaseQty(c._id)}>−</button>
+                    <span>{c.quantity}</span>
+                    <button onClick={() => increaseQty(c._id)}>+</button>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => removeFromCart(c._id)}
-                  className="text-red-400 hover:text-red-600 text-sm"
-                >
+                <button onClick={() => removeFromCart(c._id)}>
                   Remove
                 </button>
               </div>
             ))}
           </div>
 
-          {/* ================= SUMMARY ================= */}
-          <div className="glass p-6 h-fit">
-            <h2 className="text-xl font-semibold mb-4">
-              Order Summary
-            </h2>
+          {/* SUMMARY */}
+          <div className="glass p-6">
+            <h2>Summary</h2>
 
-            <div className="flex justify-between mb-2 text-gray-400">
-              <span>Items</span>
-              <span>{totalItems}</span>
-            </div>
+            <p>Items: {totalItems}</p>
+            <p>Subtotal: ${subtotal}</p>
+            <p>Shipping: ${shipping}</p>
 
-            <div className="flex justify-between mb-2 text-gray-400">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
-            </div>
+            <h3>Total: ${total}</h3>
 
-            <div className="flex justify-between mb-4 text-gray-400">
-              <span>Shipping</span>
-              <span>${shipping.toFixed(2)}</span>
-            </div>
-
-            <hr className="border-white/20 mb-4" />
-
-            <div className="flex justify-between text-lg font-bold mb-6">
-              <span>Total</span>
-              <span className="text-accent">
-                ${total.toFixed(2)}
-              </span>
-            </div>
-
-            <button
-              onClick={() => navigate("/checkout")}
-              className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded font-semibold hover:opacity-90"
-            >
-              Proceed to Checkout
+            <button onClick={() => navigate("/checkout")}>
+              Checkout
             </button>
 
-            <button
-              onClick={clearCart}
-              className="w-full mt-3 border border-red-400 text-red-400 p-2 rounded hover:bg-red-400 hover:text-white transition"
-            >
+            <button onClick={clearCart}>
               Clear Cart
             </button>
           </div>

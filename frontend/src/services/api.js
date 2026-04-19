@@ -1,6 +1,7 @@
-// const API = import.meta.env.VITE_API_URL + "/api";
-// export default API;
+const BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const API = import.meta.env.VITE_API_URL || "https://elevape.onrender.com/api";
+const API = `${BASE_URL}/api`;
 
+export { API, BASE_URL };
 export default API;
