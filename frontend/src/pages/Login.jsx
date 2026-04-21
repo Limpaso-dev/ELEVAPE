@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const BASE_URL = "https://elevape.onrender.com";
+import { API } from "../services/api";
 
 function Login() {
   const [form, setForm] = useState({});
@@ -18,7 +17,7 @@ function Login() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${BASE_URL}/api/auth/login`, {
+      const res = await fetch(`${API}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -93,6 +92,17 @@ function Login() {
           className="text-sm text-blue-400 cursor-pointer mt-3 hover:underline text-center"
         >
           Forgot Password?
+        </p>
+
+        {/* 🔥 REGISTER LINK (ADDED) */}
+        <p className="text-sm text-gray-400 mt-4 text-center">
+          Don’t have an account?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-blue-400 cursor-pointer hover:underline"
+          >
+            Register
+          </span>
         </p>
       </div>
     </div>

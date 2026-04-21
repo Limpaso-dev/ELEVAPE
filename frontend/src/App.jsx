@@ -19,7 +19,10 @@ import AgeGate from "./pages/AgeGate";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-// 📄 FOOTER PAGES (MATCH YOUR FILE NAMES)
+// 💳 PAYMENT (🔥 NEW)
+import PaymentSuccess from "./pages/PaymentSuccess";
+
+// 📄 FOOTER PAGES
 import CustomerSupport from "./pages/CustomerSupport";
 import Shipping from "./pages/Shipping";
 import PaymentMethods from "./pages/PaymentMethods";
@@ -50,6 +53,7 @@ function AppContent() {
 
       <div className="flex-grow">
         <Routes>
+
           {/* 🌍 PUBLIC */}
           <Route path="/" element={<Home />} />
           <Route path="/products" element={<Products />} />
@@ -57,11 +61,14 @@ function AppContent() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          {/* 🔥 PAYSTACK SUCCESS (CRITICAL) */}
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+
           {/* 🔐 AUTH */}
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-          {/* 📄 FOOTER PAGES */}
+          {/* 📄 FOOTER */}
           <Route path="/support" element={<CustomerSupport />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/payment-methods" element={<PaymentMethods />} />

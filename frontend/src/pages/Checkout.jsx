@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
-
-const BASE_URL = "https://elevape.onrender.com";
+import { API } from "../services/api";
 
 export default function Checkout() {
   const { cart } = useCart();
 
-  // ✅ SHIPPING LOGIC
   const SHIPPING_FEE = 30;
 
   const subtotal = cart.reduce(
@@ -15,10 +13,8 @@ export default function Checkout() {
   );
 
   const shipping = cart.length > 0 ? SHIPPING_FEE : 0;
-
   const total = subtotal + shipping;
 
-  // ✅ FORM STATE
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -34,22 +30,14 @@ export default function Checkout() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ CHECKOUT FUNCTION
   const checkout = async () => {
     try {
       const token = localStorage.getItem("token");
 
-      if (!token) {
-        alert("Please login first");
-        return;
-      }
+      if (!token) return alert("Please login first");
+      if (cart.length === 0) return alert("Cart is empty");
 
-      if (cart.length === 0) {
-        alert("Your cart is empty");
-        return;
-      }
-
-      const res = await fetch(`${BASE_URL}/api/orders`, {
+      const res = await fetch(`${API}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,16 +54,15 @@ export default function Checkout() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        alert(data);
-        return;
-      }
+      if (!res.ok) return alert(data);
 
+      // 🔥 PAYSTACK REDIRECT
       if (data.paymentLink) {
         window.location.href = data.paymentLink;
       } else {
-        alert("Payment not available yet");
+        alert("Payment link not received");
       }
+
     } catch (err) {
       console.error(err);
       alert("Checkout failed");
@@ -90,7 +77,7 @@ export default function Checkout() {
 
       <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
 
-        {/* ================= FORM ================= */}
+        {/* FORM */}
         <div className="glass p-6 rounded-xl space-y-4">
           <h2 className="text-xl font-semibold mb-2">
             Shipping Details
@@ -127,13 +114,12 @@ export default function Checkout() {
           <input name="email" placeholder="Email" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
         </div>
 
-        {/* ================= SUMMARY ================= */}
+        {/* SUMMARY */}
         <div className="glass p-6 rounded-xl h-fit">
           <h2 className="text-xl font-semibold mb-4">
             Order Summary
           </h2>
 
-          {/* CART ITEMS */}
           <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
             {cart.map((item) => (
               <div key={item._id} className="flex justify-between text-sm">
@@ -145,7 +131,6 @@ export default function Checkout() {
 
           <hr className="border-white/20 my-4" />
 
-          {/* PRICE BREAKDOWN */}
           <div className="space-y-2 text-sm mb-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
@@ -160,7 +145,6 @@ export default function Checkout() {
 
           <hr className="border-white/20 my-4" />
 
-          {/* TOTAL */}
           <div className="flex justify-between text-lg font-bold mb-6">
             <span>Total</span>
             <span className="text-accent">
@@ -168,7 +152,6 @@ export default function Checkout() {
             </span>
           </div>
 
-          {/* BUTTON */}
           <button
             onClick={checkout}
             className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90"

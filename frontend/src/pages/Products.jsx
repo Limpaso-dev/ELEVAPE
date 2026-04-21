@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-
-const API = import.meta.env.VITE_API_URL + "/api";
-const BASE_URL = import.meta.env.VITE_API_URL;
+import { API, BASE_URL } from "../services/api";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -17,7 +15,7 @@ export default function Products() {
         return res.json();
       })
       .then((data) => {
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
         console.error(err);
