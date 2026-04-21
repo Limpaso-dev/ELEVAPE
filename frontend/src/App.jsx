@@ -1,10 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import CartProvider from "./context/CartContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
+// 🔥 LAYOUT
+import MainLayout from "./components/MainLayout";
+
+// PAGES
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import Login from "./pages/Login";
@@ -14,13 +18,11 @@ import Admin from "./pages/Admin";
 import MyOrders from "./pages/MyOrders";
 import Checkout from "./pages/Checkout";
 import AgeGate from "./pages/AgeGate";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 // 🔐 AUTH
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
-// 💳 PAYMENT (🔥 NEW)
-import PaymentSuccess from "./pages/PaymentSuccess";
 
 // 📄 FOOTER PAGES
 import CustomerSupport from "./pages/CustomerSupport";
@@ -29,9 +31,6 @@ import PaymentMethods from "./pages/PaymentMethods";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import DeliveryLocations from "./pages/DeliveryLocations";
-
-import CartProvider from "./context/CartContext";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 function AppContent() {
   const [ageVerified, setAgeVerified] = useState(false);
@@ -48,77 +47,74 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-dark text-white flex flex-col">
-      <Navbar />
+    <Routes>
 
-      <div className="flex-grow">
-        <Routes>
+      {/* 🔥 MAIN LAYOUT WRAPPER */}
+      <Route element={<MainLayout />}>
 
-          {/* 🌍 PUBLIC */}
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<Products />} />
+        {/* 🌍 PUBLIC */}
+        <Route path="/" element={<Home />} />
+        <Route path="/products" element={<Products />} />
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-          {/* 🔥 PAYSTACK SUCCESS (CRITICAL) */}
-          <Route path="/payment-success" element={<PaymentSuccess />} />
+        {/* 💳 PAYMENT */}
+        <Route path="/payment-success" element={<PaymentSuccess />} />
 
-          {/* 🔐 AUTH */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+        {/* 🔐 AUTH */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-          {/* 📄 FOOTER */}
-          <Route path="/support" element={<CustomerSupport />} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/payment-methods" element={<PaymentMethods />} />
-          <Route path="/payment" element={<PaymentMethods />} />
-          <Route path="/privacy" element={<Privacy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/delivery-locations" element={<DeliveryLocations />} />
+        {/* 📄 FOOTER PAGES */}
+        <Route path="/support" element={<CustomerSupport />} />
+        <Route path="/shipping" element={<Shipping />} />
+        <Route path="/payment-methods" element={<PaymentMethods />} />
+        <Route path="/payment" element={<PaymentMethods />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/delivery-locations" element={<DeliveryLocations />} />
 
-          {/* 🛒 USER */}
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                {!user?.isAdmin ? <Cart /> : <Home />}
-              </ProtectedRoute>
-            }
-          />
+        {/* 🛒 USER */}
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              {!user?.isAdmin ? <Cart /> : <Home />}
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute>
-                {!user?.isAdmin ? <Checkout /> : <Home />}
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              {!user?.isAdmin ? <Checkout /> : <Home />}
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute>
-                {!user?.isAdmin ? <MyOrders /> : <Home />}
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              {!user?.isAdmin ? <MyOrders /> : <Home />}
+            </ProtectedRoute>
+          }
+        />
 
-          {/* 👑 ADMIN */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Admin />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </div>
+        {/* 👑 ADMIN */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
 
-      <Footer />
-    </div>
+      </Route>
+    </Routes>
   );
 }
 

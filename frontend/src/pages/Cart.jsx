@@ -26,22 +26,29 @@ export default function Cart() {
   const total = subtotal + shipping;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold gradient-text mb-6">
+    <div className="w-full space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
         Your Cart
       </h1>
 
       {cart.length === 0 ? (
-        <p className="text-gray-400">Your cart is empty 🛒</p>
+        <p className="text-gray-400 text-sm sm:text-base">
+          Your cart is empty 🛒
+        </p>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
           {/* ITEMS */}
-          <div className="md:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-4">
             {cart.map((c) => (
-              <div key={c._id} className="glass p-4 flex gap-4">
+              <div
+                key={c._id}
+                className="glass p-4 flex flex-col sm:flex-row gap-4 items-center sm:items-start"
+              >
 
-                <div className="w-24 h-24 bg-black/30 rounded overflow-hidden">
+                {/* IMAGE */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-black/30 rounded overflow-hidden flex-shrink-0">
                   <img
                     src={`${BASE_URL}${c.image}`}
                     alt={c.name}
@@ -49,42 +56,73 @@ export default function Cart() {
                   />
                 </div>
 
-                <div className="flex-1">
-                  <h2>{c.name}</h2>
-                  <p className="text-accent">${c.price}</p>
+                {/* DETAILS */}
+                <div className="flex-1 text-center sm:text-left">
+                  <h2 className="text-sm sm:text-base font-semibold">
+                    {c.name}
+                  </h2>
 
-                  <div className="flex gap-2 mt-2">
-                    <button onClick={() => decreaseQty(c._id)}>−</button>
+                  <p className="text-accent text-sm sm:text-base">
+                    ${c.price}
+                  </p>
+
+                  {/* QUANTITY */}
+                  <div className="flex justify-center sm:justify-start gap-2 mt-2">
+                    <button
+                      onClick={() => decreaseQty(c._id)}
+                      className="px-2 bg-gray-700 rounded"
+                    >
+                      −
+                    </button>
+
                     <span>{c.quantity}</span>
-                    <button onClick={() => increaseQty(c._id)}>+</button>
+
+                    <button
+                      onClick={() => increaseQty(c._id)}
+                      className="px-2 bg-gray-700 rounded"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
 
-                <button onClick={() => removeFromCart(c._id)}>
+                {/* REMOVE */}
+                <button
+                  onClick={() => removeFromCart(c._id)}
+                  className="text-red-400 text-sm hover:underline"
+                >
                   Remove
                 </button>
+
               </div>
             ))}
           </div>
 
           {/* SUMMARY */}
-          <div className="glass p-6">
-            <h2>Summary</h2>
+          <div className="glass p-5 space-y-3 h-fit">
+            <h2 className="text-lg font-semibold">Summary</h2>
 
-            <p>Items: {totalItems}</p>
-            <p>Subtotal: ${subtotal}</p>
-            <p>Shipping: ${shipping}</p>
+            <p className="text-sm">Items: {totalItems}</p>
+            <p className="text-sm">Subtotal: ${subtotal}</p>
+            <p className="text-sm">Shipping: ${shipping}</p>
 
-            <h3>Total: ${total}</h3>
+            <h3 className="text-lg font-bold">Total: ${total}</h3>
 
-            <button onClick={() => navigate("/checkout")}>
+            <button
+              onClick={() => navigate("/checkout")}
+              className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded hover:opacity-90"
+            >
               Checkout
             </button>
 
-            <button onClick={clearCart}>
+            <button
+              onClick={clearCart}
+              className="w-full bg-gray-700 p-2 rounded hover:bg-gray-600"
+            >
               Clear Cart
             </button>
           </div>
+
         </div>
       )}
     </div>

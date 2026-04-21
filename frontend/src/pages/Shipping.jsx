@@ -1,10 +1,12 @@
 export default function Shipping() {
   return (
-    <div className="pt-24 md:pt-28 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
         Shipping Policy
       </h1>
-      <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
+
+      <p className="text-gray-400 text-sm sm:text-base">
         Shipping & Dispatch Policy
       </p>
 
@@ -20,18 +22,18 @@ export default function Shipping() {
 
         {/* PROCESSING */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Processing and Dispatch Times
           </h2>
           <ul className="list-disc ml-5 space-y-1">
             <li>Orders are processed within 2 business days of payment confirmation.</li>
-            {/* <li>Once processed, orders are dropped off to Australia Post within the next business day.</li> */}
+            <li>Once processed, orders are dropped off for delivery within the next business day.</li>
           </ul>
         </section>
 
         {/* DELIVERY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Delivery Details
           </h2>
           <p>
@@ -39,32 +41,32 @@ export default function Shipping() {
           </p>
         </section>
 
-        {/* IMPORTANT
+        {/* IMPORTANT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Important Information
           </h2>
           <p>
-            Delivery times are estimates based on Australia Post's service from NSW to your location.
-            Once your order is handed over, delivery is subject to their network and external factors
+            Delivery times are estimates based on standard shipping timelines.
+            Once your order is handed over, delivery is subject to external factors
             such as weather, public holidays, or high demand periods.
           </p>
-        </section> */}
+        </section>
 
-        {/* TRACKING
+        {/* TRACKING */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Tracking Your Order
           </h2>
           <p>
             You will receive tracking details via email once your order has been dispatched.
-            These allow you to monitor your delivery directly through Australia Post.
+            These allow you to monitor your delivery progress.
           </p>
-        </section> */}
+        </section>
 
         {/* OUT OF STOCK */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Handling Out-of-Stock Items
           </h2>
           <p className="mb-2">
@@ -79,9 +81,9 @@ export default function Shipping() {
           </p>
         </section>
 
-        {/* DELIVERY TABLE
+        {/* DELIVERY TABLE */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-3">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-3">
             Shipping Delivery Estimates
           </h2>
 
@@ -112,11 +114,11 @@ export default function Shipping() {
               </tbody>
             </table>
           </div>
-        </section> */}
+        </section>
 
         {/* ADDRESS */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Address Accuracy
           </h2>
           <p>
@@ -127,7 +129,7 @@ export default function Shipping() {
 
         {/* CONTACT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Need Help?
           </h2>
           <p>

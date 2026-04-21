@@ -16,10 +16,20 @@ export default function PaymentSuccess() {
   }, []);
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <h1 className="text-3xl font-bold">
-        Payment Successful 🎉
-      </h1>
+    <div className="w-full flex justify-center items-center py-16 sm:py-24">
+
+      <div className="text-center space-y-3">
+
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+          Payment Successful 🎉
+        </h1>
+
+        <p className="text-gray-400 text-sm sm:text-base">
+          Your order has been placed successfully.
+        </p>
+
+      </div>
+
     </div>
   );
 }

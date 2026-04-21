@@ -1,11 +1,15 @@
 export default function DeliveryLocations() {
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Delivery Locations</h1>
+    <div className="w-full max-w-3xl mx-auto space-y-5">
 
-      <p className="text-gray-400">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
+        Delivery Locations
+      </h1>
+
+      <p className="text-gray-400 text-sm sm:text-base">
         We deliver worldwide, including Australia and Kenya.
       </p>
+
     </div>
   );
 }

@@ -56,7 +56,6 @@ export default function Checkout() {
 
       if (!res.ok) return alert(data);
 
-      // 🔥 PAYSTACK REDIRECT
       if (data.paymentLink) {
         window.location.href = data.paymentLink;
       } else {
@@ -70,30 +69,60 @@ export default function Checkout() {
   };
 
   return (
-    <div className="pt-24 px-6 md:px-16">
-      <h1 className="text-3xl font-bold gradient-text mb-8 text-center">
+    <div className="w-full space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white text-center">
         Checkout
       </h1>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 max-w-6xl mx-auto">
 
         {/* FORM */}
-        <div className="glass p-6 rounded-xl space-y-4">
-          <h2 className="text-xl font-semibold mb-2">
+        <div className="glass p-5 sm:p-6 rounded-xl space-y-4">
+
+          <h2 className="text-lg sm:text-xl font-semibold">
             Shipping Details
           </h2>
 
-          <div className="grid grid-cols-2 gap-4">
-            <input name="firstName" placeholder="First Name" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
-            <input name="lastName" placeholder="Last Name" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+          {/* NAME */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              name="firstName"
+              placeholder="First Name"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
+            />
+
+            <input
+              name="lastName"
+              placeholder="Last Name"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
+            />
           </div>
 
-          <input name="address" placeholder="Address" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+          {/* ADDRESS */}
+          <input
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
+            className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <input name="suburb" placeholder="Suburb" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+          {/* LOCATION */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              name="suburb"
+              placeholder="Suburb"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg"
+            />
 
-            <select name="state" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg">
+            <select
+              name="state"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg"
+            >
               <option value="">State</option>
               <option>NSW</option>
               <option>VIC</option>
@@ -106,32 +135,55 @@ export default function Checkout() {
             </select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <input name="postcode" placeholder="Postcode" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
-            <input name="phone" placeholder="Phone" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+          {/* CONTACT */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              name="postcode"
+              placeholder="Postcode"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg"
+            />
+
+            <input
+              name="phone"
+              placeholder="Phone"
+              onChange={handleChange}
+              className="w-full p-3 bg-black/40 rounded-lg"
+            />
           </div>
 
-          <input name="email" placeholder="Email" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+          <input
+            name="email"
+            placeholder="Email"
+            onChange={handleChange}
+            className="w-full p-3 bg-black/40 rounded-lg"
+          />
+
         </div>
 
         {/* SUMMARY */}
-        <div className="glass p-6 rounded-xl h-fit">
-          <h2 className="text-xl font-semibold mb-4">
+        <div className="glass p-5 sm:p-6 rounded-xl h-fit">
+
+          <h2 className="text-lg sm:text-xl font-semibold mb-3">
             Order Summary
           </h2>
 
-          <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+          <div className="space-y-2 max-h-60 overflow-y-auto pr-1 text-sm">
             {cart.map((item) => (
-              <div key={item._id} className="flex justify-between text-sm">
-                <span>{item.name} x {item.quantity}</span>
-                <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <div key={item._id} className="flex justify-between">
+                <span className="truncate">
+                  {item.name} x {item.quantity}
+                </span>
+                <span>
+                  ${(item.price * item.quantity).toFixed(2)}
+                </span>
               </div>
             ))}
           </div>
 
           <hr className="border-white/20 my-4" />
 
-          <div className="space-y-2 text-sm mb-4">
+          <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Subtotal</span>
               <span>${subtotal.toFixed(2)}</span>
@@ -145,20 +197,27 @@ export default function Checkout() {
 
           <hr className="border-white/20 my-4" />
 
-          <div className="flex justify-between text-lg font-bold mb-6">
+          <div className="flex justify-between text-base sm:text-lg font-bold mb-4">
             <span>Total</span>
             <span className="text-accent">
               ${total.toFixed(2)}
             </span>
           </div>
 
+          {/* TRUST NOTE */}
+          <p className="text-xs text-gray-400 mb-3 text-center">
+            Secure payment powered by Paystack 🔒
+          </p>
+
           <button
             onClick={checkout}
-            className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90"
+            className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90 transition"
           >
             Pay ${total.toFixed(2)}
           </button>
+
         </div>
+
       </div>
     </div>
   );

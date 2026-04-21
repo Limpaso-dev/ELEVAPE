@@ -1,11 +1,12 @@
 export default function PaymentMethods() {
   return (
-    <div className="pt-24 md:pt-28 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
         Payment Methods
       </h1>
 
-      <p className="text-gray-400 mb-8 text-sm sm:text-base">
+      <p className="text-gray-400 text-sm sm:text-base">
         At <span className="text-white font-semibold">Elevape</span>, we offer secure and convenient payment options 
         to ensure a smooth checkout experience.
       </p>
@@ -14,20 +15,20 @@ export default function PaymentMethods() {
 
         {/* PAYMENT OPTIONS */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Accepted Payment Methods
           </h2>
 
-          <ul className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-3">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 mt-3">
             {[
               "Visa",
-              "Mastercard",
-              "Apple Pay",
-              "Google Pay",
+              "Bank Transfer",
+              "Mobile Money",
+            
             ].map((method) => (
               <li
                 key={method}
-                className="bg-white/10 rounded-lg p-3 text-center font-medium hover:bg-white/20 transition"
+                className="bg-white/10 rounded-lg p-3 text-center text-xs sm:text-sm font-medium hover:bg-white/20 transition"
               >
                 {method}
               </li>
@@ -35,20 +36,20 @@ export default function PaymentMethods() {
           </ul>
         </section>
 
-        {/* FLUTTERWAVE
+        {/* PAYSTACK (REPLACED) */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
-            Secure Payments with Flutterwave
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
+            Secure Payments with Paystack
           </h2>
           <p>
-            All transactions are securely processed through our trusted payment partner. 
-            Your card details are encrypted and handled safely — we do not store your payment information.
+            All transactions are securely processed through Paystack. Your card details are encrypted and handled 
+            safely — we do not store your payment information.
           </p>
-        </section> */}
+        </section>
 
         {/* CURRENCY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Currency
           </h2>
           <p>
@@ -59,7 +60,7 @@ export default function PaymentMethods() {
 
         {/* SECURITY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Payment Security
           </h2>
           <p>
@@ -70,7 +71,7 @@ export default function PaymentMethods() {
 
         {/* CONTACT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Need Help?
           </h2>
           <p>

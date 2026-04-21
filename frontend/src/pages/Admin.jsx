@@ -142,21 +142,22 @@ function Admin() {
   };
 
   return (
-    <div className="pt-32 px-6 md:px-16 max-w-7xl mx-auto space-y-10">
-      {/* 🔥 FIXED TITLE */}
-      <h1 className="text-3xl font-bold text-white relative z-10">
+    <div className="w-full space-y-10">
+
+      {/* TITLE */}
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
         Admin Dashboard
       </h1>
 
       {/* ================= ADD PRODUCT ================= */}
-      <div className="glass p-6 max-w-xl">
-        <h2 className="text-xl mb-4">Add Product</h2>
+      <div className="glass p-4 sm:p-6 max-w-xl">
+        <h2 className="text-lg sm:text-xl mb-4">Add Product</h2>
 
         <div className="space-y-3">
           <input
             value={product.name}
             placeholder="Product Name"
-            className="w-full p-2 bg-black/40 rounded"
+            className="w-full p-2 sm:p-3 bg-black/40 rounded"
             onChange={(e) =>
               setProduct({ ...product, name: e.target.value })
             }
@@ -166,7 +167,7 @@ function Admin() {
             value={product.price}
             placeholder="Price ($)"
             type="number"
-            className="w-full p-2 bg-black/40 rounded"
+            className="w-full p-2 sm:p-3 bg-black/40 rounded"
             onChange={(e) =>
               setProduct({ ...product, price: e.target.value })
             }
@@ -176,7 +177,7 @@ function Admin() {
             value={product.compareAtPrice}
             placeholder="Compare at price"
             type="number"
-            className="w-full p-2 bg-black/40 rounded"
+            className="w-full p-2 sm:p-3 bg-black/40 rounded"
             onChange={(e) =>
               setProduct({
                 ...product,
@@ -188,13 +189,13 @@ function Admin() {
           <input type="file" onChange={handleImage} />
 
           {preview && (
-            <img src={preview} className="h-32 mx-auto" />
+            <img src={preview} className="h-24 sm:h-32 mx-auto" />
           )}
 
           <textarea
             value={product.description}
             placeholder="Description"
-            className="w-full p-2 bg-black/40 rounded"
+            className="w-full p-2 sm:p-3 bg-black/40 rounded"
             onChange={(e) =>
               setProduct({
                 ...product,
@@ -221,14 +222,112 @@ function Admin() {
 
           <button
             onClick={addProduct}
-            className="w-full bg-gradient-to-r from-primary to-secondary p-2 rounded font-semibold"
+            className="w-full bg-gradient-to-r from-primary to-secondary p-2 sm:p-3 rounded font-semibold"
           >
             Add Product
           </button>
         </div>
       </div>
 
-      {/* rest unchanged... */}
+      {/* ================= PRODUCTS ================= */}
+      <div className="space-y-4">
+        <h2 className="text-lg sm:text-xl font-semibold">Products</h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {products.map((p) => (
+            <div key={p._id} className="glass p-4 rounded-xl space-y-2">
+              <img
+                src={`${BASE_URL}${p.image}`}
+                className="h-28 mx-auto object-contain"
+              />
+
+              <p className="font-semibold">{p.name}</p>
+              <p>${p.price}</p>
+
+              <p
+                className={`text-xs ${
+                  p.inStock ? "text-green-400" : "text-red-400"
+                }`}
+              >
+                {p.inStock ? "In Stock" : "Out of Stock"}
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => toggleStock(p._id, p.inStock)}
+                  className="bg-yellow-500 px-2 py-1 rounded text-xs"
+                >
+                  Toggle
+                </button>
+
+                <button
+                  onClick={() => deleteProduct(p._id)}
+                  className="bg-red-500 px-2 py-1 rounded text-xs"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ================= ORDERS (FIXED) ================= */}
+      <div className="space-y-4">
+        <h2 className="text-lg sm:text-xl font-semibold">Orders</h2>
+
+        {orders.length === 0 ? (
+          <p className="text-gray-400 text-sm">No orders yet</p>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((o) => (
+              <div key={o._id} className="glass p-4 rounded-xl space-y-2">
+
+                <p className="text-xs break-all">
+                  Order ID: {o._id}
+                </p>
+
+                <p>Total: ${o.total}</p>
+
+                <p className="capitalize text-sm">
+                  Status: {o.status}
+                </p>
+
+                <div className="text-xs bg-black/30 p-2 rounded space-y-1">
+                  <p>
+                    {o.shippingAddress?.firstName}{" "}
+                    {o.shippingAddress?.lastName}
+                  </p>
+                  <p>{o.shippingAddress?.address}</p>
+                  <p>
+                    {o.shippingAddress?.suburb},{" "}
+                    {o.shippingAddress?.state}
+                  </p>
+                  <p>{o.shippingAddress?.phone}</p>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => updateStatus(o._id, "shipped")}
+                    className="bg-blue-500 px-2 py-1 rounded text-xs"
+                  >
+                    Ship
+                  </button>
+
+                  <button
+                    onClick={() => updateStatus(o._id, "delivered")}
+                    className="bg-green-500 px-2 py-1 rounded text-xs"
+                  >
+                    Deliver
+                  </button>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

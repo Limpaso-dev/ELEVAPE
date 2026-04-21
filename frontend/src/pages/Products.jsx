@@ -30,51 +30,72 @@ export default function Products() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold gradient-text mb-6">
+    <div className="w-full space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
         Our Products
       </h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {/* GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6">
+
         {products.map((p) => (
           <div
             key={p._id}
-            className="glass p-4 rounded-xl hover:-translate-y-2 transition"
+            className="glass p-4 rounded-xl hover:-translate-y-2 hover:shadow-lg transition duration-300 flex flex-col"
           >
+
             {/* IMAGE */}
-            <div className="bg-black/30 rounded-lg p-4 h-52 flex items-center justify-center">
+            <div className="bg-black/30 rounded-lg p-3 h-44 sm:h-48 flex items-center justify-center relative">
+
+              {/* STOCK BADGE */}
+              <span
+                className={`absolute top-2 left-2 text-xs px-2 py-1 rounded ${
+                  p.inStock ? "bg-green-600" : "bg-red-600"
+                }`}
+              >
+                {p.inStock ? "In Stock" : "Out of Stock"}
+              </span>
+
               <img
                 src={`${BASE_URL}${p.image}`}
                 alt={p.name}
-                className="h-full object-cover"
+                className="h-full object-contain"
                 onError={(e) => {
-                  console.log("Image failed:", `${BASE_URL}${p.image}`);
                   e.target.src = "https://via.placeholder.com/200";
                 }}
               />
             </div>
 
             {/* INFO */}
-            <div className="mt-4">
-              <h2 className="text-lg font-semibold">{p.name}</h2>
+            <div className="mt-3 flex flex-col flex-grow">
+              <h2 className="text-sm sm:text-base font-semibold">
+                {p.name}
+              </h2>
 
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-400 text-xs sm:text-sm mt-1 line-clamp-2">
                 {p.description || "Premium product"}
               </p>
 
-              <p className="text-xl font-bold text-accent mt-2">
+              <p className="text-base sm:text-lg font-bold text-accent mt-2">
                 ${p.price}
               </p>
 
               <button
                 onClick={() => handleAddToCart(p)}
-                className="mt-3 w-full bg-gradient-to-r from-primary to-secondary p-2 rounded"
+                disabled={!p.inStock}
+                className={`mt-3 w-full p-2 rounded text-sm font-semibold transition ${
+                  p.inStock
+                    ? "bg-gradient-to-r from-primary to-secondary hover:opacity-90"
+                    : "bg-gray-600 cursor-not-allowed"
+                }`}
               >
-                Add to Cart
+                {p.inStock ? "Add to Cart" : "Out of Stock"}
               </button>
             </div>
           </div>
         ))}
+
       </div>
     </div>
   );

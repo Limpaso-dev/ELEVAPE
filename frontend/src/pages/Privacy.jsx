@@ -1,11 +1,12 @@
 export default function Privacy() {
   return (
-    <div className="pt-24 md:pt-28 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
         Privacy Policy
       </h1>
 
-      <p className="text-gray-400 mb-8 text-sm sm:text-base">
+      <p className="text-gray-400 text-sm sm:text-base">
         At <span className="text-white font-semibold">Elevape</span>, your privacy matters. 
         This policy explains how we collect, use, and protect your information when you use our website.
       </p>
@@ -14,7 +15,7 @@ export default function Privacy() {
 
         {/* INTRO */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             1. Information We Collect
           </h2>
           <p>
@@ -25,7 +26,7 @@ export default function Privacy() {
 
         {/* USAGE */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             2. How We Use Your Information
           </h2>
           <ul className="list-disc ml-5 space-y-1">
@@ -38,7 +39,7 @@ export default function Privacy() {
 
         {/* ACCOUNT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             3. Account Responsibility
           </h2>
           <p>
@@ -49,7 +50,7 @@ export default function Privacy() {
 
         {/* DATA SECURITY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             4. Data Protection
           </h2>
           <p>
@@ -60,7 +61,7 @@ export default function Privacy() {
 
         {/* THIRD PARTY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             5. Third-Party Services
           </h2>
           <p>
@@ -71,7 +72,7 @@ export default function Privacy() {
 
         {/* USER CONTENT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             6. User Content
           </h2>
           <p>
@@ -82,7 +83,7 @@ export default function Privacy() {
 
         {/* COOKIES */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             7. Cookies & Tracking
           </h2>
           <p>
@@ -93,7 +94,7 @@ export default function Privacy() {
 
         {/* AGE */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             8. Age Requirement
           </h2>
           <p>
@@ -103,7 +104,7 @@ export default function Privacy() {
 
         {/* CHANGES */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             9. Updates to This Policy
           </h2>
           <p>
@@ -114,7 +115,7 @@ export default function Privacy() {
 
         {/* CONTACT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             10. Contact Us
           </h2>
           <p>

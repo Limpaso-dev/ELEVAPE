@@ -1,11 +1,12 @@
 export default function Terms() {
   return (
-    <div className="pt-24 md:pt-28 px-4 sm:px-6 md:px-10 max-w-5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+    <div className="w-full max-w-5xl mx-auto space-y-6">
+
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
         Terms & Conditions
       </h1>
 
-      <p className="text-gray-400 mb-8 text-sm sm:text-base">
+      <p className="text-gray-400 text-sm sm:text-base">
         Welcome to <span className="text-white font-semibold">Elevape</span>. 
         By using our website, you agree to the following terms and conditions.
       </p>
@@ -14,7 +15,7 @@ export default function Terms() {
 
         {/* INTRO */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             1. Eligibility
           </h2>
           <p>
@@ -25,7 +26,7 @@ export default function Terms() {
 
         {/* USE */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             2. Use of Website
           </h2>
           <p>
@@ -37,7 +38,7 @@ export default function Terms() {
 
         {/* ACCOUNT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             3. Accounts & Security
           </h2>
           <p>
@@ -48,7 +49,7 @@ export default function Terms() {
 
         {/* ORDERS */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             4. Orders & Payments
           </h2>
           <p>
@@ -59,7 +60,7 @@ export default function Terms() {
 
         {/* PRICING */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             5. Pricing & Accuracy
           </h2>
           <p>
@@ -70,7 +71,7 @@ export default function Terms() {
 
         {/* SHIPPING */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             6. Shipping & Delivery
           </h2>
           <p>
@@ -81,7 +82,7 @@ export default function Terms() {
 
         {/* USER CONTENT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             7. User Content
           </h2>
           <p>
@@ -92,7 +93,7 @@ export default function Terms() {
 
         {/* LIABILITY */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             8. Limitation of Liability
           </h2>
           <p>
@@ -103,7 +104,7 @@ export default function Terms() {
 
         {/* TERMINATION */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             9. Account Termination
           </h2>
           <p>
@@ -114,7 +115,7 @@ export default function Terms() {
 
         {/* CHANGES */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             10. Changes to Terms
           </h2>
           <p>
@@ -125,7 +126,7 @@ export default function Terms() {
 
         {/* CONTACT */}
         <section>
-          <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
+          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             11. Contact Us
           </h2>
           <p>

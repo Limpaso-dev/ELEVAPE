@@ -23,39 +23,42 @@ export default function ResetPassword() {
     const data = await res.json();
     setMsg(data);
 
-    // redirect after success
     setTimeout(() => {
       navigate("/login");
     }, 2000);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="w-full flex justify-center py-16 sm:py-20">
+
       <form
         onSubmit={handleSubmit}
-        className="glass p-6 rounded-xl w-full max-w-md"
+        className="glass p-5 sm:p-6 rounded-xl w-full max-w-sm sm:max-w-md space-y-4"
       >
-        <h2 className="text-2xl font-bold mb-4 text-center">
+        <h2 className="text-xl sm:text-2xl font-bold text-center">
           Reset Password
         </h2>
 
         <input
           type="password"
           placeholder="New Password"
-          className="w-full p-3 mb-4 bg-black/40 rounded-lg"
+          className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <button className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold">
+        <button className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold text-sm sm:text-base">
           Reset Password
         </button>
 
         {msg && (
-          <p className="text-green-400 mt-3 text-center">{msg}</p>
+          <p className="text-green-400 text-sm sm:text-base text-center">
+            {msg}
+          </p>
         )}
       </form>
+
     </div>
   );
 }
