@@ -5,28 +5,77 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
+
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
-  const hashed = await bcrypt.hash(req.body.password, 10);
-  const user = await User.create({ ...req.body, password: hashed });
-  res.json(user);
+  try {
+    const { password, email } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json("Email and password required");
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(400).json("User already exists");
+    }
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+      ...req.body,
+      password: hashed,
+    });
+
+    // 🔥 remove password before sending
+    const { password: _, ...safeUser } = user.toObject();
+
+    res.json(safeUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Registration failed");
+  }
 });
+
 
 // ================= LOGIN =================
 router.post("/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).json("User not found");
+  try {
+    const { email, password } = req.body;
 
-  const valid = await bcrypt.compare(req.body.password, user.password);
-  if (!valid) return res.status(400).json("Invalid credentials");
+    if (!email || !password) {
+      return res.status(400).json("Email and password required");
+    }
 
-  const token = jwt.sign(
-    { id: user._id, isAdmin: user.isAdmin },
-    process.env.JWT_SECRET
-  );
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json("User not found");
 
-  res.json({ token, user });
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(400).json("Invalid credentials");
+
+    // ✅ CLEAN + SAFE TOKEN PAYLOAD
+    const token = jwt.sign(
+      {
+        id: user._id,
+        email: user.email,              // 🔥 REQUIRED FOR PAYSTACK
+        isAdmin: !!user.isAdmin,
+        name: user.name || "",
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // 🔥 REMOVE PASSWORD BEFORE SENDING
+    const { password: _, ...safeUser } = user.toObject();
+
+    res.json({ token, user: safeUser });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json("Login failed");
+  }
 });
+
 
 // ================= FORGOT PASSWORD =================
 router.post("/forgot-password", async (req, res) => {
@@ -37,16 +86,14 @@ router.post("/forgot-password", async (req, res) => {
       return res.json("If email exists, reset link sent");
     }
 
-    // generate token
     const token = crypto.randomBytes(32).toString("hex");
 
     user.resetToken = token;
-    user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
+    user.resetTokenExpiry = Date.now() + 3600000;
     await user.save();
 
-    const resetLink = `http://localhost:5173/reset-password/${token}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
-    // send email
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -67,11 +114,13 @@ router.post("/forgot-password", async (req, res) => {
     });
 
     res.json("Reset link sent to email");
+
   } catch (err) {
     console.error(err);
     res.status(500).json("Error sending email");
   }
 });
+
 
 // ================= RESET PASSWORD =================
 router.post("/reset-password/:token", async (req, res) => {
@@ -94,10 +143,12 @@ router.post("/reset-password/:token", async (req, res) => {
     await user.save();
 
     res.json("Password reset successful");
+
   } catch (err) {
     console.error(err);
     res.status(500).json("Reset failed");
   }
 });
+
 
 module.exports = router;

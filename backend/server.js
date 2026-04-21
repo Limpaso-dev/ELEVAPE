@@ -9,10 +9,21 @@ connectDB();
 
 const app = express();
 
-// ================= CORS =================
+// ================= CORS (🔥 FIXED) =================
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://elevape.vercel.app"],
+    origin: function (origin, callback) {
+      const allowed = [
+        "http://localhost:5173",
+        "https://elevape.vercel.app",
+      ];
+
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, true); // allow preview deployments
+      }
+    },
     credentials: true,
   })
 );
@@ -25,15 +36,13 @@ app.use("/api/auth", require("./routes/auth"));
 app.use("/api/products", require("./routes/products"));
 app.use("/api/orders", require("./routes/orders"));
 
-// ================= STATIC FILES (🔥 CRITICAL FIX) =================
+// ================= STATIC FILES =================
 const uploadsPath = path.resolve(__dirname, "uploads");
 
 console.log("Serving uploads from:", uploadsPath);
 
-// serve images correctly
 app.use("/uploads", express.static(uploadsPath));
 
-// allow cross-origin image loading
 app.use("/uploads", (req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   next();

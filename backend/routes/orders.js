@@ -3,12 +3,33 @@ const Order = require("../models/Order");
 const auth = require("../middleware/auth");
 const axios = require("axios");
 
-// ➕ CREATE ORDER + INITIATE PAYMENT
+
+// ================= CREATE ORDER + PAYSTACK =================
 router.post("/", auth, async (req, res) => {
   try {
     const { items, subtotal, shipping, total, shippingAddress } = req.body;
 
-    // ✅ Create order first (NOW WITH FULL DATA)
+    // 🔴 VALIDATION (FIXED)
+    if (!req.user?.email && !shippingAddress?.email) {
+      return res.status(400).json("Email is required");
+    }
+
+    if (!process.env.PAYSTACK_SECRET_KEY) {
+      return res.status(500).json("Paystack key not configured");
+    }
+
+    if (!process.env.FRONTEND_URL) {
+      return res.status(500).json("Frontend URL not configured");
+    }
+
+    // 🔍 DEBUG
+    console.log("PAYSTACK INIT:", {
+      email: req.user.email || shippingAddress.email,
+      total,
+      callback: `${process.env.FRONTEND_URL}/payment-success`,
+    });
+
+    // 1. Create order
     const order = await Order.create({
       userId: req.user.id,
       items,
@@ -17,114 +38,96 @@ router.post("/", auth, async (req, res) => {
       total,
       shippingAddress,
       status: "pending",
+      paymentStatus: "unpaid",
     });
 
-    // 🔥 Create Flutterwave payment
-    const flwRes = await axios.post(
-      "https://api.flutterwave.com/v3/payments",
+    // 2. Initialize Paystack
+    const paystackRes = await axios.post(
+      "https://api.paystack.co/transaction/initialize",
       {
-        tx_ref: "order-" + order._id,
-        amount: total,
-        currency: "AUD",
+        // ✅ FINAL FIX (THIS IS THE IMPORTANT LINE)
+        email: req.user.email || shippingAddress.email,
 
-        // ⚠️ IMPORTANT: change this after deployment
-        redirect_url: "https://your-frontend.vercel.app/payment-success",
-
-        customer: {
-          email: req.user.email,
-          name: req.user.name || "Customer",
-        },
-        customizations: {
-          title: "Elevape",
-          description: "Payment for your order",
+        amount: Math.round(total * 100),
+        callback_url: `${process.env.FRONTEND_URL}/payment-success`,
+        metadata: {
+          orderId: order._id.toString(),
         },
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`,
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    res.json({
-      message: "Order created",
-      order,
-      paymentLink: flwRes.data.data.link,
-    });
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json("Payment initialization failed");
-  }
-});
+    const paymentLink = paystackRes.data?.data?.authorization_url;
 
-// 📦 GET ORDERS
-router.get("/", auth, async (req, res) => {
-  try {
-    if (req.user.isAdmin) {
-      const orders = await Order.find().sort({ createdAt: -1 });
-      return res.json(orders);
-    } else {
-      const orders = await Order.find({ userId: req.user.id }).sort({
-        createdAt: -1,
-      });
-      return res.json(orders);
+    if (!paymentLink) {
+      return res.status(500).json("Failed to generate payment link");
     }
-  } catch (err) {
-    res.status(500).json(err.message);
-  }
-});
-
-// 🔄 UPDATE ORDER STATUS (ADMIN ONLY)
-router.put("/status/:id", auth, async (req, res) => {
-  try {
-    if (!req.user.isAdmin) {
-      return res.status(403).json("Admin only");
-    }
-
-    const { status } = req.body;
-    const allowedStatuses = ["pending", "shipped", "delivered", "cancelled"];
-
-    if (!allowedStatuses.includes(status)) {
-      return res.status(400).json("Invalid status");
-    }
-
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json("Order not found");
-
-    order.status = status;
-    await order.save();
 
     res.json({
-      message: "Order status updated",
       order,
+      paymentLink,
     });
+
   } catch (err) {
-    res.status(500).json(err.message);
+    console.error("PAYSTACK ERROR:", err.response?.data || err.message);
+
+    res.status(500).json(
+      err.response?.data?.message || "Payment initialization failed"
+    );
   }
 });
 
-// ❌ CANCEL ORDER (USER ONLY)
-router.put("/cancel/:id", auth, async (req, res) => {
+
+// ================= VERIFY PAYMENT =================
+router.get("/verify/:reference", async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
-    if (!order) return res.status(404).json("Order not found");
+    const reference = req.params.reference;
 
-    if (order.userId !== req.user.id) {
-      return res.status(403).json("Not allowed");
+    if (!reference) {
+      return res.status(400).json("Reference missing");
     }
 
-    if (order.status !== "pending") {
-      return res.status(400).json("Cannot cancel this order");
+    const verifyRes = await axios.get(
+      `https://api.paystack.co/transaction/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
+      }
+    );
+
+    const data = verifyRes.data.data;
+
+    if (data.status === "success") {
+      const orderId = data.metadata?.orderId;
+
+      if (orderId) {
+        const order = await Order.findById(orderId);
+
+        if (order) {
+          order.paymentStatus = "paid";
+          order.paymentReference = reference;
+          order.status = "processing";
+          await order.save();
+        }
+      }
     }
 
-    order.status = "cancelled";
-    await order.save();
+    res.json(verifyRes.data);
 
-    res.json("Order cancelled successfully");
   } catch (err) {
-    res.status(500).json(err.message);
+    console.error("VERIFY ERROR:", err.response?.data || err.message);
+
+    res.status(500).json(
+      err.response?.data?.message || "Verification failed"
+    );
   }
 });
+
 
 module.exports = router;
