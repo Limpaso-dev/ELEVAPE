@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useState, useEffect } from "react";
+import { ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function Navbar() {
     navigate("/login");
   };
 
-  // 🔥 ACTIVE LINK STYLE
+  // ACTIVE LINK STYLE
   const navLink = (path) =>
     `relative font-semibold text-sm sm:text-base transition ${
       location.pathname === path
@@ -50,7 +51,7 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* DESKTOP */}
+        {/* DESKTOP NAV */}
         <div className="hidden md:flex items-center gap-6 lg:gap-8">
 
           <Link to="/" className={navLink("/")}>Home</Link>
@@ -58,9 +59,6 @@ export default function Navbar() {
 
           {user && !user.isAdmin && (
             <>
-              <Link to="/cart" className={navLink("/cart")}>
-                Cart ({totalItems})
-              </Link>
               <Link to="/orders" className={navLink("/orders")}>
                 Orders
               </Link>
@@ -87,13 +85,34 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* MOBILE BUTTON */}
-        <button
-          className="md:hidden text-xl"
-          onClick={() => setOpen(true)}
-        >
-          ☰
-        </button>
+        {/* RIGHT SIDE (MOBILE + CART) */}
+        <div className="flex items-center gap-3">
+
+          {/* 🛒 CART ICON */}
+          {user && !user.isAdmin && (
+            <div
+              onClick={() => navigate("/cart")}
+              className="relative cursor-pointer"
+            >
+              <ShoppingCart size={22} />
+
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">
+                  {totalItems}
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            className="md:hidden text-xl"
+            onClick={() => setOpen(true)}
+          >
+            ☰
+          </button>
+
+        </div>
       </div>
 
       {/* OVERLAY */}
@@ -106,7 +125,7 @@ export default function Navbar() {
 
       {/* MOBILE DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-screen w-[75%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-80 w-[75%] max-w-[220px] bg-black z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -124,14 +143,9 @@ export default function Navbar() {
             <Link to="/products" onClick={() => setOpen(false)}>Products</Link>
 
             {user && !user.isAdmin && (
-              <>
-                <Link to="/cart" onClick={() => setOpen(false)}>
-                  Cart ({totalItems})
-                </Link>
-                <Link to="/orders" onClick={() => setOpen(false)}>
-                  Orders
-                </Link>
-              </>
+              <Link to="/orders" onClick={() => setOpen(false)}>
+                Orders
+              </Link>
             )}
 
             {user?.isAdmin && (

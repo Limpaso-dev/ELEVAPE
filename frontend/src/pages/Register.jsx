@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../services/api";
+import BackButton from "../components/BackButton";
 
 function Register() {
   const [form, setForm] = useState({

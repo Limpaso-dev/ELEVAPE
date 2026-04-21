@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
+import BackButton from "../components/BackButton";
 
 export default function ResetPassword() {
   const { token } = useParams();

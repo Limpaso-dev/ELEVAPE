@@ -2,6 +2,7 @@ import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { BASE_URL } from "../services/api";
+import BackButton from "../components/BackButton";
 
 export default function Cart() {
   const {

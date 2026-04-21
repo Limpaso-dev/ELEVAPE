@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API, BASE_URL } from "../services/api";
+import BackButton from "../components/BackButton";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
