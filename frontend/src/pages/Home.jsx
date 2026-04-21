@@ -82,7 +82,7 @@ export default function Home() {
       {/* ================= ABOUT ================= */}
       <section className="text-center px-2 sm:px-4 pb-6 sm:pb-10 md:pb-12">
         <h2 className="text-lg sm:text-2xl md:text-3xl font-bold">
-          Elevape — Premium Vaping
+          Elevape Australia — Premium Vaping
         </h2>
 
         <p className="mt-4 text-gray-400 max-w-xs sm:max-w-md md:max-w-xl mx-auto text-xs sm:text-sm md:text-base leading-relaxed">
