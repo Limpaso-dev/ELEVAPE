@@ -22,6 +22,14 @@ export default function Navbar() {
     navigate("/login");
   };
 
+  // 🔥 ACTIVE LINK STYLE
+  const navLink = (path) =>
+    `relative font-semibold text-sm sm:text-base transition ${
+      location.pathname === path
+        ? "text-white after:absolute after:-bottom-1 after:left-0 after:w-full after:h-[2px] after:bg-white"
+        : "text-gray-300 hover:text-white"
+    }`;
+
   return (
     <nav
       className={`fixed w-full top-0 z-50 transition-all duration-300 ${
@@ -29,48 +37,59 @@ export default function Navbar() {
       }`}
     >
       {/* TOP */}
-      <div className="flex justify-between items-center px-3 md:px-16 text-white">
+      <div className="w-full max-w-6xl mx-auto flex justify-between items-center px-4 sm:px-6 md:px-10 text-white">
 
         {/* LOGO */}
         <div
           onClick={() => navigate("/")}
           className="flex items-center gap-2 cursor-pointer"
         >
-          <img src="/images/Elevape logo.png" className="h-6 md:h-8" />
-          <span className="text-sm md:text-lg font-semibold">
+          <img src="/images/Elevape logo.png" className="h-6 sm:h-7 md:h-8" />
+          <span className="text-base sm:text-lg md:text-xl font-bold">
             Elevape
           </span>
         </div>
 
         {/* DESKTOP */}
-        <div className="hidden md:flex items-center gap-8 text-sm">
-          <Link to="/">Home</Link>
-          <Link to="/products">Products</Link>
+        <div className="hidden md:flex items-center gap-6 lg:gap-8">
+
+          <Link to="/" className={navLink("/")}>Home</Link>
+          <Link to="/products" className={navLink("/products")}>Products</Link>
 
           {user && !user.isAdmin && (
             <>
-              <Link to="/cart">Cart ({totalItems})</Link>
-              <Link to="/orders">Orders</Link>
+              <Link to="/cart" className={navLink("/cart")}>
+                Cart ({totalItems})
+              </Link>
+              <Link to="/orders" className={navLink("/orders")}>
+                Orders
+              </Link>
             </>
           )}
 
-          {user?.isAdmin && <Link to="/admin">Admin</Link>}
+          {user?.isAdmin && (
+            <Link to="/admin" className={navLink("/admin")}>
+              Admin
+            </Link>
+          )}
 
           {user ? (
             <button
               onClick={logout}
-              className="bg-white text-black px-3 py-1 rounded"
+              className="bg-white text-black px-3 py-1 rounded text-sm font-semibold"
             >
               Logout
             </button>
           ) : (
-            <Link to="/login">Login</Link>
+            <Link to="/login" className={navLink("/login")}>
+              Login
+            </Link>
           )}
         </div>
 
         {/* MOBILE BUTTON */}
         <button
-          className="md:hidden text-lg"
+          className="md:hidden text-xl"
           onClick={() => setOpen(true)}
         >
           ☰
@@ -87,19 +106,20 @@ export default function Navbar() {
 
       {/* MOBILE DRAWER */}
       <div
-        className={`fixed top-0 right-0 h-screen w-[70%] max-w-[260px] bg-black z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0 h-screen w-[75%] max-w-[280px] bg-black z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-4 text-white">
+        <div className="p-5 text-white flex flex-col h-full">
 
           {/* CLOSE */}
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end mb-6">
             <button onClick={() => setOpen(false)}>✕</button>
           </div>
 
           {/* LINKS */}
-          <div className="flex flex-col gap-3 text-sm">
+          <div className="flex flex-col gap-4 text-base font-semibold">
+
             <Link to="/" onClick={() => setOpen(false)}>Home</Link>
             <Link to="/products" onClick={() => setOpen(false)}>Products</Link>
 
@@ -122,11 +142,11 @@ export default function Navbar() {
           </div>
 
           {/* ACTION */}
-          <div className="mt-5">
+          <div className="mt-auto">
             {user ? (
               <button
                 onClick={logout}
-                className="w-full bg-white text-black px-3 py-2 rounded text-sm"
+                className="w-full bg-white text-black px-3 py-2 rounded text-sm font-semibold"
               >
                 Logout
               </button>
@@ -134,7 +154,7 @@ export default function Navbar() {
               <Link
                 to="/login"
                 onClick={() => setOpen(false)}
-                className="block text-center"
+                className="block text-center font-semibold"
               >
                 Login
               </Link>
