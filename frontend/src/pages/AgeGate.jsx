@@ -11,7 +11,7 @@ export default function AgeGate({ onVerify }) {
   };
 
   const handleNo = () => {
-    alert("You must be 18+ to access Elevape.");
+    alert("You must be 18+ to continue.");
   };
 
   return (
@@ -25,13 +25,12 @@ export default function AgeGate({ onVerify }) {
 
         {/* MESSAGE */}
         <p className="text-gray-300 mb-6">
-          This site contains products that are not suitable for minors.
-          Please verify that you are 18 years of age or older.
+          Welcome to Elevape. Please confirm that you are 18 years of age or older to continue browsing our store.
         </p>
 
         {/* QUESTION */}
         <h2 className="text-lg font-semibold mb-6">
-          Are you over 18 years of age?
+          Are you 18 years of age or older?
         </h2>
 
         {/* BUTTONS */}
