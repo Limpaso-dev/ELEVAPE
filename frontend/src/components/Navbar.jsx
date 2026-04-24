@@ -81,7 +81,7 @@ export default function Navbar() {
                 ELEVAPE
               </p>
               <p className="text-[11px] uppercase tracking-[0.24em] text-gray-400">
-                Premium Vape Store
+                Premium Furniture Store
               </p>
             </div>
           </button>
