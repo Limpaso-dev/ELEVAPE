@@ -1,7 +1,11 @@
 const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
-  let token = req.headers.authorization || ""; // ✅ FIXED
+  let token = req.headers.authorization || "";
+
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json("JWT secret not configured");
+  }
 
   if (!token) {
     return res.status(401).json("No token");

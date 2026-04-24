@@ -5,14 +5,26 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
+const normalizeEmail = (email = "") => email.trim().toLowerCase();
+const isValidPassword = (password) =>
+  typeof password === "string" && password.trim().length >= 6;
 
 // ================= REGISTER =================
 router.post("/register", async (req, res) => {
   try {
-    const { password, email } = req.body;
+    const name =
+      typeof req.body.name === "string" ? req.body.name.trim() : "";
+    const email = normalizeEmail(req.body.email);
+    const { password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json("Email and password required");
+    if (!name || !email || !password) {
+      return res.status(400).json("Name, email and password are required");
+    }
+
+    if (!isValidPassword(password)) {
+      return res
+        .status(400)
+        .json("Password must be at least 6 characters long");
     }
 
     const existing = await User.findOne({ email });
@@ -23,11 +35,11 @@ router.post("/register", async (req, res) => {
     const hashed = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      ...req.body,
+      name,
+      email,
       password: hashed,
     });
 
-    // 🔥 remove password before sending
     const { password: _, ...safeUser } = user.toObject();
 
     res.json(safeUser);
@@ -37,14 +49,18 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
 // ================= LOGIN =================
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json("Email and password required");
+    }
+
+    if (!process.env.JWT_SECRET) {
+      return res.status(500).json("JWT secret not configured");
     }
 
     const user = await User.findOne({ email });
@@ -53,11 +69,10 @@ router.post("/login", async (req, res) => {
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(400).json("Invalid credentials");
 
-    // ✅ CLEAN + SAFE TOKEN PAYLOAD
     const token = jwt.sign(
       {
         id: user._id,
-        email: user.email,              // 🔥 REQUIRED FOR PAYSTACK
+        email: user.email,
         isAdmin: !!user.isAdmin,
         name: user.name || "",
       },
@@ -65,22 +80,33 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // 🔥 REMOVE PASSWORD BEFORE SENDING
     const { password: _, ...safeUser } = user.toObject();
 
     res.json({ token, user: safeUser });
-
   } catch (err) {
     console.error(err);
     res.status(500).json("Login failed");
   }
 });
 
-
 // ================= FORGOT PASSWORD =================
 router.post("/forgot-password", async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const email = normalizeEmail(req.body.email);
+
+    if (!email) {
+      return res.status(400).json("Email is required");
+    }
+
+    if (
+      !process.env.FRONTEND_URL ||
+      !process.env.EMAIL ||
+      !process.env.EMAIL_PASS
+    ) {
+      return res.status(500).json("Email reset is not configured");
+    }
+
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.json("If email exists, reset link sent");
@@ -114,17 +140,21 @@ router.post("/forgot-password", async (req, res) => {
     });
 
     res.json("Reset link sent to email");
-
   } catch (err) {
     console.error(err);
     res.status(500).json("Error sending email");
   }
 });
 
-
 // ================= RESET PASSWORD =================
 router.post("/reset-password/:token", async (req, res) => {
   try {
+    if (!isValidPassword(req.body.password)) {
+      return res
+        .status(400)
+        .json("Password must be at least 6 characters long");
+    }
+
     const user = await User.findOne({
       resetToken: req.params.token,
       resetTokenExpiry: { $gt: Date.now() },
@@ -143,12 +173,10 @@ router.post("/reset-password/:token", async (req, res) => {
     await user.save();
 
     res.json("Password reset successful");
-
   } catch (err) {
     console.error(err);
     res.status(500).json("Reset failed");
   }
 });
-
 
 module.exports = router;

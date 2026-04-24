@@ -1,30 +1,20 @@
 const router = require("express").Router();
 const Product = require("../models/Product");
 const auth = require("../middleware/auth");
+
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("../config/cloudinary");
 
-// ================= UPLOAD PATH (🔥 FIXED) =================
-const uploadDir = path.resolve(__dirname, "../uploads");
-
-// ensure folder exists
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// ================= MULTER CONFIG =================
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir); // ✅ absolute path
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = Date.now() + path.extname(file.originalname);
-    cb(null, uniqueName);
+// ================= CLOUDINARY STORAGE =================
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "elevape",
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
   },
 });
 
-// optional: restrict to images only
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
@@ -35,6 +25,14 @@ const upload = multer({
     }
   },
 });
+
+const requireAdmin = (req, res, next) => {
+  if (!req.user?.isAdmin) {
+    return res.status(403).json("Not admin");
+  }
+
+  next();
+};
 
 // ================= GET ALL PRODUCTS =================
 router.get("/", async (req, res) => {
@@ -47,44 +45,42 @@ router.get("/", async (req, res) => {
 });
 
 // ================= ADD PRODUCT =================
-router.post("/", auth, upload.single("image"), async (req, res) => {
-  try {
-    if (!req.user.isAdmin) {
-      return res.status(403).json("Not admin");
+router.post("/", auth, requireAdmin, (req, res) => {
+  upload.single("image")(req, res, async (uploadErr) => {
+    if (uploadErr) {
+      return res.status(400).json(uploadErr.message);
     }
 
-    if (!req.file) {
-      return res.status(400).json("Image is required");
+    try {
+      console.log("FILE DATA:", req.file);
+
+      if (!req.file) {
+        return res.status(400).json("Image is required");
+      }
+
+      const product = await Product.create({
+        name: req.body.name,
+        price: Number(req.body.price),
+        compareAtPrice: req.body.compareAtPrice
+          ? Number(req.body.compareAtPrice)
+          : null,
+        description: req.body.description,
+        image: req.file.secure_url || req.file.path,
+        imagePublicId: req.file.filename || null,
+        inStock: req.body.inStock !== "false",
+      });
+
+      res.json(product);
+    } catch (err) {
+      console.error("UPLOAD ERROR:", err);
+      res.status(500).json(err.message);
     }
-
-    const product = await Product.create({
-      name: req.body.name,
-      price: Number(req.body.price),
-      compareAtPrice: req.body.compareAtPrice
-        ? Number(req.body.compareAtPrice)
-        : null,
-      description: req.body.description,
-
-      // 🔥 correct path saved
-      image: `/uploads/${req.file.filename}`,
-
-      inStock: req.body.inStock !== "false",
-    });
-
-    res.json(product);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json(err.message);
-  }
+  });
 });
 
 // ================= UPDATE STOCK =================
-router.put("/:id/stock", auth, async (req, res) => {
+router.put("/:id/stock", auth, requireAdmin, async (req, res) => {
   try {
-    if (!req.user.isAdmin) {
-      return res.status(403).json("Not admin");
-    }
-
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { inStock: req.body.inStock },
@@ -102,27 +98,22 @@ router.put("/:id/stock", auth, async (req, res) => {
 });
 
 // ================= DELETE PRODUCT =================
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, requireAdmin, async (req, res) => {
   try {
-    if (!req.user.isAdmin) {
-      return res.status(403).json("Not admin");
-    }
-
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json("Product not found");
     }
 
-    // 🔥 FIXED FILE DELETE PATH
     if (product.image) {
-      const filePath = path.resolve(
-        __dirname,
-        "..",
-        product.image.replace("/uploads/", "uploads/")
-      );
+      try {
+        const publicId =
+          product.imagePublicId ||
+          product.image.split("/").slice(-2).join("/").split(".")[0];
 
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.error("Cloudinary delete error:", err.message);
       }
     }
 
