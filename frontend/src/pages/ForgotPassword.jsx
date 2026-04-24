@@ -8,21 +8,25 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${API}/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email }),
-    });
+    try {
+      const res = await fetch(`${API}/auth/forgot-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
 
-    const data = await res.json();
-    setMsg(data);
+      const data = await res.json();
+      setMsg(data);
+    } catch (err) {
+      console.error(err);
+      setMsg("Failed to send reset link");
+    }
   };
 
   return (
     <div className="w-full flex justify-center py-16 sm:py-20">
-
       <form
         onSubmit={handleSubmit}
         className="glass p-5 sm:p-6 rounded-xl w-full max-w-sm sm:max-w-md space-y-4"
@@ -50,7 +54,6 @@ export default function ForgotPassword() {
           </p>
         )}
       </form>
-
     </div>
   );
 }

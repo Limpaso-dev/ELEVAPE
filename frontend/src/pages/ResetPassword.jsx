@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
-import BackButton from "../components/BackButton";
 
 export default function ResetPassword() {
   const { token } = useParams();
@@ -13,25 +12,33 @@ export default function ResetPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(`${API}/auth/reset-password/${token}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password }),
-    });
+    try {
+      const res = await fetch(`${API}/auth/reset-password/${token}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
 
-    const data = await res.json();
-    setMsg(data);
+      const data = await res.json();
+      setMsg(data);
 
-    setTimeout(() => {
-      navigate("/login");
-    }, 2000);
+      if (!res.ok) {
+        return;
+      }
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (err) {
+      console.error(err);
+      setMsg("Reset failed");
+    }
   };
 
   return (
     <div className="w-full flex justify-center py-16 sm:py-20">
-
       <form
         onSubmit={handleSubmit}
         className="glass p-5 sm:p-6 rounded-xl w-full max-w-sm sm:max-w-md space-y-4"
@@ -59,7 +66,6 @@ export default function ResetPassword() {
           </p>
         )}
       </form>
-
     </div>
   );
 }

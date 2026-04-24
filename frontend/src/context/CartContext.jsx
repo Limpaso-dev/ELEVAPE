@@ -1,31 +1,34 @@
-import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
+const getStoredUser = () => {
+  const storedUser = localStorage.getItem("user");
+  return storedUser ? JSON.parse(storedUser) : null;
+};
+
+const getStoredCart = (storedUser) => {
+  if (!storedUser?._id) {
+    return [];
+  }
+
+  const savedCart = localStorage.getItem(`cart_${storedUser._id}`);
+  return savedCart ? JSON.parse(savedCart) : [];
+};
+
 function CartProvider({ children }) {
-  const [user, setUser] = useState(() =>
-    JSON.parse(localStorage.getItem("user"))
-  );
+  const [user, setUser] = useState(() => getStoredUser());
+  const [cart, setCart] = useState(() => getStoredCart(getStoredUser()));
 
-  const [cart, setCart] = useState([]);
-
-  // 🔁 SYNC USER + CART
   useEffect(() => {
     const syncUser = () => {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const storedUser = getStoredUser();
       setUser(storedUser);
-
-      if (storedUser?._id) {
-        const savedCart = localStorage.getItem(`cart_${storedUser._id}`);
-        setCart(savedCart ? JSON.parse(savedCart) : []);
-      } else {
-        setCart([]);
-      }
+      setCart(getStoredCart(storedUser));
     };
 
-    syncUser();
     window.addEventListener("storage", syncUser);
 
     return () => {
@@ -33,14 +36,12 @@ function CartProvider({ children }) {
     };
   }, []);
 
-  // 💾 SAVE CART PER USER
   useEffect(() => {
     if (user?._id) {
       localStorage.setItem(`cart_${user._id}`, JSON.stringify(cart));
     }
   }, [cart, user]);
 
-  // 🧠 DERIVED VALUES (IMPORTANT)
   const subtotal = useMemo(() => {
     return cart.reduce((acc, item) => {
       return acc + item.price * item.quantity;
@@ -51,7 +52,6 @@ function CartProvider({ children }) {
     return cart.reduce((acc, item) => acc + item.quantity, 0);
   }, [cart]);
 
-  // ➕ ADD TO CART
   const addToCart = (product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item._id === product._id);
@@ -68,7 +68,6 @@ function CartProvider({ children }) {
     });
   };
 
-  // ➖ DECREASE
   const decreaseQty = (id) => {
     setCart((prev) =>
       prev
@@ -81,7 +80,6 @@ function CartProvider({ children }) {
     );
   };
 
-  // ➕ INCREASE
   const increaseQty = (id) => {
     setCart((prev) =>
       prev.map((item) =>
@@ -92,12 +90,10 @@ function CartProvider({ children }) {
     );
   };
 
-  // ❌ REMOVE
   const removeFromCart = (id) => {
     setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
-  // 🧹 CLEAR
   const clearCart = () => {
     setCart([]);
     if (user?._id) {
@@ -109,8 +105,8 @@ function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         cart,
-        subtotal,     // 🔥 NEW
-        totalItems,   // 🔥 NEW
+        subtotal,
+        totalItems,
         addToCart,
         increaseQty,
         decreaseQty,

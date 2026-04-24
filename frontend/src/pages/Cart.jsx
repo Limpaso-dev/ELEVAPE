@@ -1,8 +1,6 @@
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { BASE_URL } from "../services/api";
-import BackButton from "../components/BackButton";
 
 export default function Cart() {
   const {
@@ -28,7 +26,6 @@ export default function Cart() {
 
   return (
     <div className="w-full space-y-6">
-
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
         Your Cart
       </h1>
@@ -51,9 +48,12 @@ export default function Cart() {
                 {/* IMAGE */}
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-black/30 rounded overflow-hidden flex-shrink-0">
                   <img
-                    src={`${BASE_URL}${c.image}`}
+                    src={c.image} // 🔥 FIXED (Cloudinary)
                     alt={c.name}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = "https://via.placeholder.com/150";
+                    }}
                   />
                 </div>
 

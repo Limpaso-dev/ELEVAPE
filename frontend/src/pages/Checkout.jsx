@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { API } from "../services/api";
-import BackButton from "../components/BackButton";
 
 export default function Checkout() {
   const { cart } = useCart();
@@ -38,6 +37,11 @@ export default function Checkout() {
       if (!token) return alert("Please login first");
       if (cart.length === 0) return alert("Cart is empty");
 
+      // 🔥 BASIC VALIDATION
+      if (!form.firstName || !form.address || !form.phone || !form.email) {
+        return alert("Please fill all required fields");
+      }
+
       const res = await fetch(`${API}/orders`, {
         method: "POST",
         headers: {
@@ -71,7 +75,6 @@ export default function Checkout() {
 
   return (
     <div className="w-full space-y-6">
-
       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white text-center">
         Checkout
       </h1>
@@ -85,45 +88,17 @@ export default function Checkout() {
             Shipping Details
           </h2>
 
-          {/* NAME */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input
-              name="firstName"
-              placeholder="First Name"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
-            />
-
-            <input
-              name="lastName"
-              placeholder="Last Name"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
-            />
+            <input name="firstName" placeholder="First Name" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+            <input name="lastName" placeholder="Last Name" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
           </div>
 
-          {/* ADDRESS */}
-          <input
-            name="address"
-            placeholder="Address"
-            onChange={handleChange}
-            className="w-full p-3 bg-black/40 rounded-lg text-sm sm:text-base"
-          />
+          <input name="address" placeholder="Address" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
 
-          {/* LOCATION */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input
-              name="suburb"
-              placeholder="Suburb"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg"
-            />
+            <input name="suburb" placeholder="Suburb" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
 
-            <select
-              name="state"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg"
-            >
+            <select name="state" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg">
               <option value="">State</option>
               <option>NSW</option>
               <option>VIC</option>
@@ -136,29 +111,12 @@ export default function Checkout() {
             </select>
           </div>
 
-          {/* CONTACT */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <input
-              name="postcode"
-              placeholder="Postcode"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg"
-            />
-
-            <input
-              name="phone"
-              placeholder="Phone"
-              onChange={handleChange}
-              className="w-full p-3 bg-black/40 rounded-lg"
-            />
+            <input name="postcode" placeholder="Postcode" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
+            <input name="phone" placeholder="Phone" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
           </div>
 
-          <input
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
-            className="w-full p-3 bg-black/40 rounded-lg"
-          />
+          <input name="email" placeholder="Email" onChange={handleChange} className="w-full p-3 bg-black/40 rounded-lg" />
 
         </div>
 
@@ -205,9 +163,8 @@ export default function Checkout() {
             </span>
           </div>
 
-          {/* TRUST NOTE */}
           <p className="text-xs text-gray-400 mb-3 text-center">
-            Secure payment powered by Paystack 🔒
+            Secure payment 🔒
           </p>
 
           <button
