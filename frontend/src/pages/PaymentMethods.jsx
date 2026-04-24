@@ -8,7 +8,7 @@ export default function PaymentMethods() {
 
       <p className="text-gray-400 text-sm sm:text-base">
         At <span className="text-white font-semibold">Elevape</span>, we offer secure and convenient payment options 
-        to ensure a smooth checkout experience.
+        to ensure a smooth checkout experience for your furniture purchases.
       </p>
 
       <div className="space-y-6 sm:space-y-8 text-gray-300 leading-relaxed text-sm sm:text-base">
@@ -24,7 +24,6 @@ export default function PaymentMethods() {
               "Visa",
               "Bank Transfer",
               "Mobile Money",
-            
             ].map((method) => (
               <li
                 key={method}
@@ -36,13 +35,13 @@ export default function PaymentMethods() {
           </ul>
         </section>
 
-        {/* PAYSTACK (REPLACED) */}
+        {/* PAYSTACK */}
         <section>
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
             Secure Payments with Paystack
           </h2>
           <p>
-            All transactions are securely processed through Paystack. Your card details are encrypted and handled 
+            All transactions are securely processed through Paystack. Your payment details are encrypted and handled 
             safely — we do not store your payment information.
           </p>
         </section>
@@ -53,7 +52,7 @@ export default function PaymentMethods() {
             Currency
           </h2>
           <p>
-            All payments are processed in AUD. If you are using an international card, your bank may 
+            All payments are processed in KES (Kenyan Shillings). If you are using an international card, your bank may 
             apply currency conversion charges.
           </p>
         </section>
@@ -75,7 +74,7 @@ export default function PaymentMethods() {
             Need Help?
           </h2>
           <p>
-            If you experience any issues during checkout, please contact our support team for assistance.
+            If you experience any issues during checkout, please contact our support team for assistance with your order.
           </p>
         </section>
 

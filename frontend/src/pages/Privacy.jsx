@@ -8,7 +8,7 @@ export default function Privacy() {
 
       <p className="text-gray-400 text-sm sm:text-base">
         At <span className="text-white font-semibold">Elevape</span>, your privacy matters. 
-        This policy explains how we collect, use, and protect your information when you use our website.
+        This policy explains how we collect, use, and protect your information when you use our website to shop furniture and home products.
       </p>
 
       <div className="space-y-6 sm:space-y-8 text-gray-300 leading-relaxed text-sm sm:text-base">
@@ -20,7 +20,7 @@ export default function Privacy() {
           </h2>
           <p>
             We may collect personal information such as your name, email, phone number,
-            shipping address, and payment details when you place an order or create an account.
+            delivery address, and payment details when you place an order or create an account.
           </p>
         </section>
 
@@ -30,7 +30,7 @@ export default function Privacy() {
             2. How We Use Your Information
           </h2>
           <ul className="list-disc ml-5 space-y-1">
-            <li>To process and deliver your orders</li>
+            <li>To process and deliver your furniture orders</li>
             <li>To communicate updates about your purchase</li>
             <li>To improve our website and services</li>
             <li>To provide customer support</li>
@@ -95,10 +95,10 @@ export default function Privacy() {
         {/* AGE */}
         <section>
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
-            8. Age Requirement
+            8. Eligibility
           </h2>
           <p>
-            You must be at least 18 years old to use this website or purchase products from Elevape.
+            You must be at least 18 years old to use this website or make purchases from Elevape.
           </p>
         </section>
 

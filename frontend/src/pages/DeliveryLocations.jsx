@@ -7,7 +7,7 @@ export default function DeliveryLocations() {
       </h1>
 
       <p className="text-gray-400 text-sm sm:text-base">
-        We deliver worldwide, including Australia and Kenya.
+        We offer nationwide delivery across Kenya, bringing quality furniture directly to your doorstep.
       </p>
 
     </div>

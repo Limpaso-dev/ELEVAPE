@@ -24,7 +24,7 @@ export default function Products() {
       })
       .catch((err) => {
         console.error(err);
-        setError("We couldn't load products right now.");
+        setError("We couldn't load furniture items right now.");
       })
       .finally(() => {
         setLoading(false);
@@ -52,11 +52,11 @@ export default function Products() {
             </p>
             <div className="space-y-2">
               <h1 className="text-2xl font-black tracking-tight text-white sm:text-4xl">
-                Explore Every ELEVAPE Drop
+                Explore Premium Furniture Collections
               </h1>
               <p className="max-w-xl text-sm leading-6 text-gray-300 sm:text-base">
-                Browse the latest devices and flavors, check active discounts,
-                and add what you want in a couple of taps.
+                Browse modern furniture pieces, explore available styles, and
+                add your favorites to your space in just a few clicks.
               </p>
             </div>
           </div>
@@ -108,7 +108,7 @@ export default function Products() {
         </div>
       ) : products.length === 0 ? (
         <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center">
-          <h2 className="text-xl font-semibold text-white">No products yet</h2>
+          <h2 className="text-xl font-semibold text-white">No furniture items yet</h2>
           <p className="mt-2 text-sm text-gray-400">
             Once items are added from the admin dashboard, they will appear
             here.
@@ -166,7 +166,7 @@ export default function Products() {
                     </h2>
 
                     <p className="min-h-[2.5rem] text-xs leading-5 text-gray-400 sm:text-sm">
-                      {p.description || "Premium product"}
+                      {p.description || "Premium furniture piece"}
                     </p>
                   </div>
 

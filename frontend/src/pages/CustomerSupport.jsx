@@ -12,7 +12,7 @@ export default function CustomerSupport() {
 
       <ul className="space-y-2 text-gray-300 text-sm sm:text-base">
         <li>Email: support@yourstore.com</li>
-        <li>Phone: +254 700 000 000</li>
+        <li>Phone: +2547 573 582 37</li>
         <li>Hours: Mon - Fri (9AM - 6PM)</li>
       </ul>
 

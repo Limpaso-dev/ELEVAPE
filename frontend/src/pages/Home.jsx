@@ -6,7 +6,7 @@ export default function Home() {
     <div className="w-full space-y-12 md:space-y-16">
       <section className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#0a0a0a]">
         <img
-          src="/images/hero.jpeg"
+          src="/images/fun-hero.jpg"
           alt="ELEVAPE hero"
           className="h-[54vh] w-full object-cover sm:h-[58vh] lg:h-[64vh]"
         />
@@ -22,18 +22,12 @@ export default function Home() {
               className="max-w-2xl space-y-4"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent">
-                Premium Vape Store
+                Premium Furniture Store
               </p>
 
               <h1 className="text-3xl font-black leading-tight text-white sm:text-4xl md:text-5xl">
-                Elevate your vaping experience with premium devices and bold
-                flavors.
+                Elevate your space with premium furniture and timeless designs.
               </h1>
-
-              {/* <p className="max-w-lg text-sm leading-6 text-gray-300 sm:text-base">
-                Browse our curated collection, discover customer favorites, and
-                shop with a smoother, faster experience.
-              </p> */}
 
               <div className="flex flex-wrap gap-3 pt-2">
                 <Link to="/products">
@@ -53,54 +47,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* <section className="grid gap-4 md:grid-cols-3">
-        {[
-          {
-            title: "Premium Devices",
-            text: "Reliable hardware selected for smooth performance and everyday use.",
-          },
-          {
-            title: "Bold Flavours",
-            text: "A focused lineup of standout flavours and customer favourites.",
-          },
-          {
-            title: "Easy Shopping",
-            text: "Simple browsing, fast checkout, and a cleaner shopping flow.",
-          },
-        ].map((feature) => (
-          <div
-            key={feature.title}
-            className="rounded-[22px] border border-white/10 bg-white/[0.04] p-5"
-          >
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent">
-              {feature.title}
-            </p>
-            <p className="mt-3 text-sm leading-6 text-gray-300">
-              {feature.text}
-            </p>
-          </div>
-        ))}
-      </section> */}
-
       <section className="flex justify-center">
         <div className="glass w-full max-w-md border border-white/10 p-6">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
             Featured Product
           </p>
-          <h2 className="mt-3 text-2xl font-bold text-white">PRO BAR</h2>
-          <p className="mt-1 text-sm text-gray-400">10000 puffs</p>
+          <h2 className="mt-3 text-2xl font-bold text-white">PRO DESIGN</h2>
+          <p className="mt-1 text-sm text-gray-400">Modern design</p>
 
           <div className="mt-6 rounded-[22px] bg-black/20 p-5">
             <img
-              src="/images/PRO BAR.png"
-              alt="PRO BAR"
+              src="/images/pro-design.jpg"
+              alt="PRO DESIGN"
               className="mx-auto w-[150px] object-contain sm:w-[180px]"
             />
           </div>
 
           <p className="mt-5 text-sm leading-6 text-gray-300">
-            Smooth, long-lasting vaping with consistent flavour performance in
-            a premium design.
+            Stylish, durable furniture crafted to enhance comfort and elevate
+            your living space with a premium finish.
           </p>
 
           <Link to="/products">
@@ -109,36 +74,6 @@ export default function Home() {
             </button>
           </Link>
         </div>
-
-        {/* <div className="rounded-[28px] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 sm:p-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
-            About ELEVAPE
-          </p>
-          <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
-            Premium vaping, presented simply.
-          </h2>
-          <p className="mt-4 max-w-2xl text-sm leading-7 text-gray-300 sm:text-base">
-            ELEVAPE brings together quality devices, bold flavours, and a clean
-            shopping experience. Whether you are trying something new or
-            restocking a favourite, the goal is to make finding the right
-            product feel easy and reliable.
-          </p>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            {[
-              "Curated device range",
-              "Customer favourite flavours",
-              "Smooth checkout flow",
-            ].map((point) => (
-              <div
-                key={point}
-                className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4 text-sm text-gray-200"
-              >
-                {point}
-              </div>
-            ))}
-          </div>
-        </div> */}
       </section>
     </div>
   );

@@ -8,7 +8,7 @@ export default function Terms() {
 
       <p className="text-gray-400 text-sm sm:text-base">
         Welcome to <span className="text-white font-semibold">Elevape</span>. 
-        By using our website, you agree to the following terms and conditions.
+        By using our website, you agree to the following terms and conditions for purchasing furniture and home products.
       </p>
 
       <div className="space-y-6 sm:space-y-8 text-gray-300 leading-relaxed text-sm sm:text-base">
@@ -19,7 +19,7 @@ export default function Terms() {
             1. Eligibility
           </h2>
           <p>
-            You must be at least 18 years old to use this website or purchase any products.
+            You must be at least 18 years old to use this website or make purchases.
             By using this site, you confirm that you meet this requirement.
           </p>
         </section>
@@ -64,7 +64,7 @@ export default function Terms() {
             5. Pricing & Accuracy
           </h2>
           <p>
-            We aim to ensure all product details and prices are accurate. However, errors may occur,
+            We aim to ensure all furniture product details and prices are accurate. However, errors may occur,
             and we reserve the right to correct them or cancel orders if necessary.
           </p>
         </section>
@@ -72,11 +72,11 @@ export default function Terms() {
         {/* SHIPPING */}
         <section>
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
-            6. Shipping & Delivery
+            6. Delivery
           </h2>
           <p>
             Delivery times are estimates and may vary. Once orders are handed to the courier,
-            we are not responsible for delays caused by third-party services.
+            we are not responsible for delays caused by third-party logistics services.
           </p>
         </section>
 
@@ -98,7 +98,7 @@ export default function Terms() {
           </h2>
           <p>
             Elevape is not liable for any indirect or consequential damages arising from the use
-            of this website or our products.
+            of this website or our furniture products.
           </p>
         </section>
 

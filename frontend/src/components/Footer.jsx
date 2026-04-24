@@ -43,14 +43,14 @@ export default function Footer() {
                   ELEVAPE
                 </p>
                 <p className="text-[11px] uppercase tracking-[0.24em] text-gray-400">
-                  Premium Vape Store
+                  Premium Furniture Store
                 </p>
               </div>
             </div>
 
             <p className="max-w-sm text-sm leading-6 text-gray-400">
-              Premium vaping products designed around quality, bold flavor, and
-              a cleaner shopping experience across every device.
+              Premium furniture crafted for comfort, durability, and timeless
+              design to elevate every living space.
             </p>
 
             <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
@@ -58,8 +58,8 @@ export default function Footer() {
                 Shop With Confidence
               </p>
               <p className="mt-2 text-sm leading-6 text-gray-300">
-                Browse products, manage your orders, and move through checkout
-                smoothly on mobile or desktop.
+                Browse furniture collections, manage your orders, and complete
+                your checkout smoothly on mobile or desktop.
               </p>
             </div>
           </div>
