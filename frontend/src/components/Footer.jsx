@@ -6,7 +6,7 @@ export default function Footer() {
   const quickLinks = [
     { label: "Home", path: "/" },
     { label: "Products", path: "/products" },
-    { label: "Customer Support", path: "/support" },
+    { label: "Refund & Return Policy", path: "/support" },
     { label: "Delivery Locations", path: "/delivery-locations" },
   ];
 
@@ -142,7 +142,7 @@ export default function Footer() {
               Terms
             </Link>
             <Link className="transition hover:text-white" to="/support">
-              Support
+              Refund & Return Policy
             </Link>
           </div>
         </div>

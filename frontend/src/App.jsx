@@ -25,7 +25,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
 // 📄 FOOTER PAGES
-import CustomerSupport from "./pages/CustomerSupport";
+import Refund from "./pages/Refund";
 import Shipping from "./pages/Shipping";
 import PaymentMethods from "./pages/PaymentMethods";
 import Privacy from "./pages/Privacy";
@@ -67,7 +67,7 @@ function AppContent() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* 📄 FOOTER PAGES */}
-        <Route path="/support" element={<CustomerSupport />} />
+        <Route path="/support" element={<Refund />} />
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/payment-methods" element={<PaymentMethods />} />
         <Route path="/payment" element={<PaymentMethods />} />
