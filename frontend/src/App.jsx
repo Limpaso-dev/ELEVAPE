@@ -67,7 +67,8 @@ function AppContent() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/* 📄 FOOTER PAGES */}
-        <Route path="/support" element={<Refund />} />
+        <Route path="/refund" element={<Refund />} />
+        <Route path="/support" element={<Refund />} /> {/* fallback for existing links */}
         <Route path="/shipping" element={<Shipping />} />
         <Route path="/payment-methods" element={<PaymentMethods />} />
         <Route path="/payment" element={<PaymentMethods />} />
