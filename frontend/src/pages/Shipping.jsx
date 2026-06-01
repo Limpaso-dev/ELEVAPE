@@ -37,7 +37,7 @@ export default function Shipping() {
             Delivery Details
           </h2>
           <p>
-            Delivery fee: <span className="text-white font-semibold">KES 3,000</span> nationwide.
+            Delivery fee: <span className="text-white font-semibold">$2.00</span> nationwide.
           </p>
         </section>
 

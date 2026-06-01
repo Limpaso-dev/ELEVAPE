@@ -35,13 +35,13 @@ export default function PaymentMethods() {
           </ul>
         </section>
 
-        {/* PAYSTACK */}
+        {/* DPO */}
         <section>
           <h2 className="text-base sm:text-lg md:text-xl font-semibold text-white mb-2">
-            Secure Payments with Paystack
+            Secure Payments with DPO
           </h2>
           <p>
-            All transactions are securely processed through Paystack. Your payment details are encrypted and handled 
+            All transactions are securely processed through Direct Pay Online. Your payment details are encrypted and handled 
             safely — we do not store your payment information.
           </p>
         </section>
@@ -52,7 +52,7 @@ export default function PaymentMethods() {
             Currency
           </h2>
           <p>
-            All payments are processed in KES (Kenyan Shillings). If you are using an international card, your bank may 
+            All payments are processed in USD. If you are using an international card, your bank may 
             apply currency conversion charges.
           </p>
         </section>

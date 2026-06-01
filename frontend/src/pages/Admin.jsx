@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { API } from "../services/api";
+import { formatUSD } from "../utils/currency";
 import BackButton from "../components/BackButton";
 
 function Admin() {
@@ -373,11 +374,11 @@ function Admin() {
               </p>
               <div className="flex items-center gap-3 pt-2">
                 <span className="text-xl font-bold text-accent">
-                  {product.price ? `$${product.price}` : "$0"}
+                  {formatUSD(product.price)}
                 </span>
                 {product.compareAtPrice && (
                   <span className="text-sm text-gray-500 line-through">
-                    ${product.compareAtPrice}
+                    {formatUSD(product.compareAtPrice)}
                   </span>
                 )}
               </div>
@@ -450,10 +451,10 @@ function Admin() {
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-semibold text-white">{p.name}</p>
                     <div className="text-right">
-                      <p className="font-bold text-accent">${p.price}</p>
+                      <p className="font-bold text-accent">{formatUSD(p.price)}</p>
                       {p.compareAtPrice && (
                         <p className="text-xs text-gray-500 line-through">
-                          ${p.compareAtPrice}
+                          {formatUSD(p.compareAtPrice)}
                         </p>
                       )}
                     </div>
@@ -545,7 +546,7 @@ function Admin() {
                       {o.status}
                     </span>
                     <span className="text-base font-bold text-accent">
-                      ${o.total}
+                      {formatUSD(o.total)}
                     </span>
                   </div>
                 </div>

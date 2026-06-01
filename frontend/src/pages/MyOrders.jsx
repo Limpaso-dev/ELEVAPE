@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
+import { formatUSD } from "../utils/currency";
 
 export default function MyOrders() {
   const [orders, setOrders] = useState([]);
@@ -94,7 +95,7 @@ export default function MyOrders() {
               </div>
 
               <p className="font-semibold text-base sm:text-lg">
-                Total: <span className="text-accent">{o.total} AUD</span>
+                Total: <span className="text-accent">{formatUSD(o.total)}</span>
               </p>
 
               <p className="text-xs sm:text-sm text-gray-400">

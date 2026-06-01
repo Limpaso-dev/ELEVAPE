@@ -1,6 +1,7 @@
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { formatUSD } from "../utils/currency";
 
 export default function Cart() {
   const {
@@ -20,7 +21,7 @@ export default function Cart() {
     if (!user) navigate("/login");
   }, [user, navigate]);
 
-  const SHIPPING_FEE = 30;
+  const SHIPPING_FEE = 2;
   const shipping = cart.length > 0 ? SHIPPING_FEE : 0;
   const total = subtotal + shipping;
 
@@ -64,7 +65,7 @@ export default function Cart() {
                   </h2>
 
                   <p className="text-accent text-sm sm:text-base">
-                    ${c.price}
+                    {formatUSD(c.price)}
                   </p>
 
                   {/* QUANTITY */}
@@ -104,10 +105,10 @@ export default function Cart() {
             <h2 className="text-lg font-semibold">Summary</h2>
 
             <p className="text-sm">Items: {totalItems}</p>
-            <p className="text-sm">Subtotal: ${subtotal}</p>
-            <p className="text-sm">Shipping: ${shipping}</p>
+            <p className="text-sm">Subtotal: {formatUSD(subtotal)}</p>
+            <p className="text-sm">Shipping: {formatUSD(shipping)}</p>
 
-            <h3 className="text-lg font-bold">Total: ${total}</h3>
+            <h3 className="text-lg font-bold">Total: {formatUSD(total)}</h3>
 
             <button
               onClick={() => navigate("/checkout")}

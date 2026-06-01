@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API } from "../services/api";
+import { formatUSD } from "../utils/currency";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -173,11 +174,11 @@ export default function Products() {
                   <div className="mt-4 flex items-end justify-between gap-2">
                     <div className="flex flex-col">
                       <p className="text-lg font-black text-accent sm:text-xl">
-                        ${p.price}
+                        {formatUSD(p.price)}
                       </p>
                       {hasDiscount && (
                         <p className="text-xs text-gray-500 line-through sm:text-sm">
-                          ${p.compareAtPrice}
+                          {formatUSD(p.compareAtPrice)}
                         </p>
                       )}
                     </div>

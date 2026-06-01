@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { API } from "../services/api";
+import { formatUSD } from "../utils/currency";
 
 export default function Checkout() {
   const { cart } = useCart();
 
-  const SHIPPING_FEE = 30;
+  const SHIPPING_FEE = 2;
 
   const subtotal = cart.reduce(
     (a, b) => a + b.price * b.quantity,
@@ -134,7 +135,7 @@ export default function Checkout() {
                   {item.name} x {item.quantity}
                 </span>
                 <span>
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {formatUSD(item.price * item.quantity)}
                 </span>
               </div>
             ))}
@@ -145,12 +146,12 @@ export default function Checkout() {
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>{formatUSD(subtotal)}</span>
             </div>
 
             <div className="flex justify-between">
               <span>Shipping</span>
-              <span>${shipping.toFixed(2)}</span>
+              <span>{formatUSD(shipping)}</span>
             </div>
           </div>
 
@@ -159,19 +160,19 @@ export default function Checkout() {
           <div className="flex justify-between text-base sm:text-lg font-bold mb-4">
             <span>Total</span>
             <span className="text-accent">
-              ${total.toFixed(2)}
+              {formatUSD(total)}
             </span>
           </div>
 
           <p className="text-xs text-gray-400 mb-3 text-center">
-            Secure payment 🔒
+            Secure payment with DPO
           </p>
 
           <button
             onClick={checkout}
             className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90 transition"
           >
-            Pay ${total.toFixed(2)}
+            Pay {formatUSD(total)}
           </button>
 
         </div>
