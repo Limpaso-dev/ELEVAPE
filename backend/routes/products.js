@@ -3,20 +3,13 @@ const Product = require("../models/Product");
 const auth = require("../middleware/auth");
 
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("../config/cloudinary");
 
-// ================= CLOUDINARY STORAGE =================
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "elevape",
-    allowed_formats: ["jpg", "png", "jpeg", "webp"],
-  },
-});
-
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
@@ -25,6 +18,25 @@ const upload = multer({
     }
   },
 });
+
+const uploadToCloudinary = (file) =>
+  new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "elevape",
+        resource_type: "image",
+      },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      }
+    );
+
+    stream.end(file.buffer);
+  });
 
 const requireAdmin = (req, res, next) => {
   if (!req.user?.isAdmin) {
@@ -51,12 +63,16 @@ router.post("/", auth, requireAdmin, (req, res) => {
       return res.status(400).json(uploadErr.message);
     }
 
+    let uploadedImage;
+
     try {
       console.log("FILE DATA:", req.file);
 
       if (!req.file) {
         return res.status(400).json("Image is required");
       }
+
+      uploadedImage = await uploadToCloudinary(req.file);
 
       const product = await Product.create({
         name: req.body.name,
@@ -65,13 +81,21 @@ router.post("/", auth, requireAdmin, (req, res) => {
           ? Number(req.body.compareAtPrice)
           : null,
         description: req.body.description,
-        image: req.file.secure_url || req.file.path,
-        imagePublicId: req.file.filename || null,
+        image: uploadedImage.secure_url,
+        imagePublicId: uploadedImage.public_id,
         inStock: req.body.inStock !== "false",
       });
 
       res.json(product);
     } catch (err) {
+      if (uploadedImage?.public_id) {
+        try {
+          await cloudinary.uploader.destroy(uploadedImage.public_id);
+        } catch (cleanupErr) {
+          console.error("Cloudinary cleanup error:", cleanupErr.message);
+        }
+      }
+
       console.error("UPLOAD ERROR:", err);
       res.status(500).json(err.message);
     }

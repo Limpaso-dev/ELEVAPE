@@ -12,6 +12,148 @@ const ORDER_STATUSES = [
   "cancelled",
 ];
 
+const DPO_ENDPOINT =
+  process.env.DPO_ENDPOINT || "https://secure.3gdirectpay.com/API/v6/";
+const DPO_PAYMENT_URL =
+  process.env.DPO_PAYMENT_URL || "https://secure.3gdirectpay.com/payv2.php?ID=";
+const DPO_CURRENCY = process.env.DPO_CURRENCY || "USD";
+
+const escapeXml = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+const getXmlValue = (xml, tag) => {
+  const match = xml.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`, "i"));
+  return match ? match[1].trim() : "";
+};
+
+const formatDpoDate = (date = new Date()) => {
+  const pad = (value) => String(value).padStart(2, "0");
+
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate()),
+  ].join("/") + ` ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+const postDpoXml = async (xml) => {
+  try {
+    const response = await axios.post(DPO_ENDPOINT, xml, {
+      headers: {
+        "Content-Type": "text/xml; charset=utf-8",
+        Accept: "application/xml, text/xml, */*",
+        "User-Agent": "ELEVAPE Checkout",
+      },
+      timeout: 30000,
+    });
+
+    return response.data;
+  } catch (err) {
+    const status = err.response?.status;
+
+    if (status === 403) {
+      throw new Error(
+        "DPO rejected the API request with HTTP 403. Check that your DPO endpoint matches your test account and that DPO has enabled API access for this environment."
+      );
+    }
+
+    if (err.code === "ENOTFOUND") {
+      throw new Error(
+        "DPO API hostname could not be resolved. Check DPO_ENDPOINT."
+      );
+    }
+
+    throw err;
+  }
+};
+
+const createDpoToken = async ({ order, customerEmail }) => {
+  if (!process.env.DPO_COMPANY_TOKEN || !process.env.DPO_SERVICE_ID) {
+    throw new Error("DPO credentials are not configured");
+  }
+
+  if (!process.env.FRONTEND_URL) {
+    throw new Error("Frontend URL not configured");
+  }
+
+  const orderId = order._id.toString();
+  const amount = Number(order.total).toFixed(2);
+  const customerFirstName = order.shippingAddress?.firstName || "Customer";
+  const customerLastName = order.shippingAddress?.lastName || "";
+  const redirectUrl = `${process.env.FRONTEND_URL}/payment-success?orderId=${orderId}`;
+  const backUrl = `${process.env.FRONTEND_URL}/checkout`;
+
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<API3G>
+  <CompanyToken>${escapeXml(process.env.DPO_COMPANY_TOKEN)}</CompanyToken>
+  <Request>createToken</Request>
+  <Transaction>
+    <PaymentAmount>${amount}</PaymentAmount>
+    <PaymentCurrency>${escapeXml(DPO_CURRENCY)}</PaymentCurrency>
+    <CompanyRef>${escapeXml(orderId)}</CompanyRef>
+    <RedirectURL>${escapeXml(redirectUrl)}</RedirectURL>
+    <BackURL>${escapeXml(backUrl)}</BackURL>
+    <CompanyRefUnique>0</CompanyRefUnique>
+    <PTL>5</PTL>
+    <customerFirstName>${escapeXml(customerFirstName)}</customerFirstName>
+    <customerLastName>${escapeXml(customerLastName)}</customerLastName>
+    <customerEmail>${escapeXml(customerEmail)}</customerEmail>
+  </Transaction>
+  <Services>
+    <Service>
+      <ServiceType>${escapeXml(process.env.DPO_SERVICE_ID)}</ServiceType>
+      <ServiceDescription>${escapeXml(`ELEVAPE order ${orderId}`)}</ServiceDescription>
+      <ServiceDate>${formatDpoDate()}</ServiceDate>
+    </Service>
+  </Services>
+</API3G>`;
+
+  const data = await postDpoXml(xml);
+  const result = getXmlValue(data, "Result");
+  const explanation = getXmlValue(data, "ResultExplanation");
+  const transToken = getXmlValue(data, "TransToken");
+  const transRef = getXmlValue(data, "TransRef");
+
+  if (result !== "000" || !transToken) {
+    throw new Error(explanation || "Failed to create DPO payment token");
+  }
+
+  return {
+    transToken,
+    transRef,
+    paymentLink: `${DPO_PAYMENT_URL}${encodeURIComponent(transToken)}`,
+  };
+};
+
+const verifyDpoToken = async (transactionToken) => {
+  if (!process.env.DPO_COMPANY_TOKEN) {
+    throw new Error("DPO credentials are not configured");
+  }
+
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<API3G>
+  <CompanyToken>${escapeXml(process.env.DPO_COMPANY_TOKEN)}</CompanyToken>
+  <Request>verifyToken</Request>
+  <TransactionToken>${escapeXml(transactionToken)}</TransactionToken>
+</API3G>`;
+
+  const data = await postDpoXml(xml);
+
+  return {
+    raw: data,
+    result: getXmlValue(data, "Result"),
+    explanation: getXmlValue(data, "ResultExplanation"),
+    approval: getXmlValue(data, "TransactionApproval"),
+    amount: getXmlValue(data, "TransactionAmount"),
+    currency: getXmlValue(data, "TransactionCurrency"),
+  };
+};
+
 // ================= GET ORDERS =================
 router.get("/", auth, async (req, res) => {
   try {
@@ -24,7 +166,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// ================= CREATE ORDER + PAYSTACK =================
+// ================= CREATE ORDER + DPO TOKEN =================
 router.post("/", auth, async (req, res) => {
   let order;
 
@@ -36,19 +178,9 @@ router.post("/", auth, async (req, res) => {
       return res.status(400).json("Email is required");
     }
 
-    if (!process.env.PAYSTACK_SECRET_KEY) {
-      return res.status(500).json("Paystack key not configured");
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json("Cart is empty");
     }
-
-    if (!process.env.FRONTEND_URL) {
-      return res.status(500).json("Frontend URL not configured");
-    }
-
-    console.log("PAYSTACK INIT:", {
-      email: customerEmail,
-      total,
-      callback: `${process.env.FRONTEND_URL}/payment-success`,
-    });
 
     const orderId = new mongoose.Types.ObjectId();
 
@@ -59,38 +191,22 @@ router.post("/", auth, async (req, res) => {
       subtotal,
       shipping,
       total,
+      currency: DPO_CURRENCY,
       shippingAddress,
       status: "pending",
       paymentStatus: "unpaid",
+      paymentProvider: "dpo",
     });
 
-    const paystackRes = await axios.post(
-      "https://api.paystack.co/transaction/initialize",
-      {
-        email: customerEmail,
-        amount: Math.round(total * 100),
-        callback_url: `${process.env.FRONTEND_URL}/payment-success`,
-        metadata: {
-          orderId: orderId.toString(),
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const dpo = await createDpoToken({ order, customerEmail });
 
-    const paymentLink = paystackRes.data?.data?.authorization_url;
-
-    if (!paymentLink) {
-      throw new Error("Failed to generate payment link");
-    }
+    order.paymentReference = dpo.transToken;
+    order.paymentProviderReference = dpo.transRef;
+    await order.save();
 
     res.json({
       order,
-      paymentLink,
+      paymentLink: dpo.paymentLink,
     });
   } catch (err) {
     if (order?._id) {
@@ -101,7 +217,7 @@ router.post("/", auth, async (req, res) => {
       }
     }
 
-    console.error("PAYSTACK ERROR:", err.response?.data || err.message);
+    console.error("DPO ERROR:", err.response?.data || err.message);
 
     res.status(500).json(
       err.response?.data?.message ||
@@ -175,47 +291,43 @@ router.get("/verify/:reference", auth, async (req, res) => {
       return res.status(400).json("Reference missing");
     }
 
-    if (!process.env.PAYSTACK_SECRET_KEY) {
-      return res.status(500).json("Paystack key not configured");
+    const query = mongoose.Types.ObjectId.isValid(reference)
+      ? { _id: reference }
+      : { paymentReference: reference };
+
+    const order = await Order.findOne(query);
+
+    if (!order) {
+      return res.status(404).json("Order not found");
     }
 
-    const verifyRes = await axios.get(
-      `https://api.paystack.co/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        },
-      }
-    );
-
-    const data = verifyRes.data.data;
-    const orderId = data.metadata?.orderId;
-
-    if (orderId) {
-      const order = await Order.findById(orderId);
-
-      if (!order) {
-        return res.status(404).json("Order not found");
-      }
-
-      if (!req.user.isAdmin && order.userId !== req.user.id) {
-        return res.status(403).json("Not authorized to verify this order");
-      }
-
-      if (data.status === "success") {
-        order.paymentStatus = "paid";
-        order.paymentReference = reference;
-        order.status = "processing";
-        await order.save();
-      }
+    if (!req.user.isAdmin && order.userId !== req.user.id) {
+      return res.status(403).json("Not authorized to verify this order");
     }
 
-    res.json(verifyRes.data);
+    if (!order.paymentReference) {
+      return res.status(400).json("Payment reference missing");
+    }
+
+    const verification = await verifyDpoToken(order.paymentReference);
+
+    if (verification.result === "000") {
+      order.paymentStatus = "paid";
+      order.status = "processing";
+      order.paymentProviderReference =
+        verification.approval || order.paymentProviderReference;
+      await order.save();
+    }
+
+    res.json({
+      order,
+      verification,
+    });
   } catch (err) {
     console.error("VERIFY ERROR:", err.response?.data || err.message);
 
     res.status(500).json(
-      err.response?.data?.message || "Verification failed"
+      err.response?.data?.message || err.message || "Verification failed"
     );
   }
 });

@@ -15,20 +15,28 @@ const orderSchema = new mongoose.Schema({
   subtotal: Number,
   shipping: Number,
   total: Number,
+  currency: {
+    type: String,
+    default: "USD",
+  },
 
   status: {
     type: String,
     default: "pending",
   },
 
-  // ✅ NEW
   paymentStatus: {
     type: String,
     default: "unpaid",
   },
 
-  // ✅ NEW (Paystack reference)
+  paymentProvider: {
+    type: String,
+    default: "dpo",
+  },
+
   paymentReference: String,
+  paymentProviderReference: String,
 
   shippingAddress: {
     firstName: String,

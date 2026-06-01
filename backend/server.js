@@ -8,17 +8,23 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://elevape.vercel.app",
+  process.env.FRONTEND_URL,
+  ...(process.env.CORS_ORIGINS || "").split(","),
+]
+  .map((origin) => origin && origin.trim().replace(/\/$/, ""))
+  .filter(Boolean);
+
 // ================= CORS =================
 app.use(
   cors({
     origin: function (origin, callback) {
-      const allowed = [
-        "http://localhost:5173",
-        "https://elevape.vercel.app",
-        process.env.FRONTEND_URL,
-      ].filter(Boolean);
+      const normalizedOrigin = origin && origin.replace(/\/$/, "");
 
-      if (!origin || allowed.includes(origin)) {
+      if (!normalizedOrigin || allowedOrigins.includes(normalizedOrigin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
