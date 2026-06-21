@@ -5,6 +5,7 @@ import { formatUSD } from "../utils/currency";
 
 export default function Checkout() {
   const { cart } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const SHIPPING_FEE = 2;
 
@@ -32,15 +33,25 @@ export default function Checkout() {
   };
 
   const checkout = async () => {
+    if (isSubmitting) return;
+
     try {
+      setIsSubmitting(true);
       const token = localStorage.getItem("token");
 
-      if (!token) return alert("Please login first");
-      if (cart.length === 0) return alert("Cart is empty");
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+      if (cart.length === 0) {
+        alert("Cart is empty");
+        return;
+      }
 
       // 🔥 BASIC VALIDATION
       if (!form.firstName || !form.address || !form.phone || !form.email) {
-        return alert("Please fill all required fields");
+        alert("Please fill all required fields");
+        return;
       }
 
       const res = await fetch(`${API}/orders`, {
@@ -60,7 +71,9 @@ export default function Checkout() {
 
       const data = await res.json();
 
-      if (!res.ok) return alert(data);
+      if (!res.ok) {
+        return alert(data.message || "Payment initialization failed");
+      }
 
       if (data.paymentLink) {
         window.location.href = data.paymentLink;
@@ -71,6 +84,8 @@ export default function Checkout() {
     } catch (err) {
       console.error(err);
       alert("Checkout failed");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -170,9 +185,10 @@ export default function Checkout() {
 
           <button
             onClick={checkout}
-            className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90 transition"
+            disabled={isSubmitting}
+            className="w-full bg-gradient-to-r from-primary to-secondary p-3 rounded-lg font-semibold hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Pay {formatUSD(total)}
+            {isSubmitting ? "Preparing secure payment..." : `Pay ${formatUSD(total)}`}
           </button>
 
         </div>

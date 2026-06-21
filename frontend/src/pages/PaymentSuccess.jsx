@@ -1,8 +1,23 @@
 import { useEffect, useState } from "react";
 import { API } from "../services/api";
+import { useCart } from "../context/CartContext";
 
 export default function PaymentSuccess() {
-  const [status, setStatus] = useState("Verifying your payment...");
+  const [status, setStatus] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const hasReference = [
+      "orderId",
+      "reference",
+      "TransactionToken",
+      "TransToken",
+      "ID",
+    ].some((key) => params.get(key));
+
+    return hasReference && localStorage.getItem("token")
+      ? "Verifying your payment..."
+      : "Payment completed. Please check My Orders for confirmation.";
+  });
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -32,6 +47,7 @@ export default function PaymentSuccess() {
         .then((data) => {
           console.log("Payment verified:", data);
           if (data.order?.paymentStatus === "paid") {
+            clearCart();
             setStatus("Your order has been placed successfully.");
           } else {
             setStatus("Payment received by DPO is still pending confirmation.");
@@ -41,10 +57,8 @@ export default function PaymentSuccess() {
           console.error(err);
           setStatus("We could not verify the payment yet. Please check My Orders.");
         });
-    } else {
-      setStatus("Payment completed. Please check My Orders for confirmation.");
     }
-  }, []);
+  }, [clearCart]);
 
   return (
     <div className="w-full flex justify-center items-center py-16 sm:py-24">

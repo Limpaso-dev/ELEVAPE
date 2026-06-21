@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 const CartContext = createContext();
 
@@ -94,12 +101,12 @@ function CartProvider({ children }) {
     setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
-  const clearCart = () => {
+  const clearCart = useCallback(() => {
     setCart([]);
     if (user?._id) {
       localStorage.removeItem(`cart_${user._id}`);
     }
-  };
+  }, [user]);
 
   return (
     <CartContext.Provider

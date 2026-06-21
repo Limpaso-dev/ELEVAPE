@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
+const Product = require("../models/Product");
 const auth = require("../middleware/auth");
 const axios = require("axios");
 
@@ -17,6 +18,9 @@ const DPO_ENDPOINT =
 const DPO_PAYMENT_URL =
   process.env.DPO_PAYMENT_URL || "https://secure.3gdirectpay.com/payv2.php?ID=";
 const DPO_CURRENCY = process.env.DPO_CURRENCY || "USD";
+const SHIPPING_FEE = 2;
+
+const roundMoney = (value) => Math.round(Number(value) * 100) / 100;
 
 const escapeXml = (value = "") =>
   String(value)
@@ -120,7 +124,11 @@ const createDpoToken = async ({ order, customerEmail }) => {
   const transRef = getXmlValue(data, "TransRef");
 
   if (result !== "000" || !transToken) {
-    throw new Error(explanation || "Failed to create DPO payment token");
+    const error = new Error(explanation || "Failed to create DPO payment token");
+    error.statusCode = 502;
+    error.provider = "DPO";
+    error.providerCode = result;
+    throw error;
   }
 
   return {
@@ -171,7 +179,7 @@ router.post("/", auth, async (req, res) => {
   let order;
 
   try {
-    const { items, subtotal, shipping, total, shippingAddress } = req.body;
+    const { items, shippingAddress } = req.body;
     const customerEmail = req.user.email || shippingAddress?.email;
 
     if (!customerEmail) {
@@ -182,12 +190,57 @@ router.post("/", auth, async (req, res) => {
       return res.status(400).json("Cart is empty");
     }
 
+    const requestedItems = items.map((item) => ({
+      productId: item._id,
+      quantity: Number(item.quantity),
+    }));
+
+    if (
+      requestedItems.some(
+        ({ productId, quantity }) =>
+          !mongoose.Types.ObjectId.isValid(productId) ||
+          !Number.isInteger(quantity) ||
+          quantity < 1
+      )
+    ) {
+      return res.status(400).json("Cart contains invalid items");
+    }
+
+    const productIds = [...new Set(requestedItems.map(({ productId }) => productId))];
+    const products = await Product.find({ _id: { $in: productIds } });
+    const productsById = new Map(
+      products.map((product) => [product._id.toString(), product])
+    );
+
+    const verifiedItems = requestedItems.map(({ productId, quantity }) => {
+      const product = productsById.get(productId);
+
+      if (!product || !product.inStock) {
+        throw new Error("One or more products are unavailable");
+      }
+
+      return {
+        _id: product._id.toString(),
+        name: product.name,
+        price: product.price,
+        quantity,
+      };
+    });
+
+    const subtotal = roundMoney(
+      verifiedItems.reduce(
+        (sum, item) => sum + Number(item.price) * item.quantity,
+        0
+      )
+    );
+    const shipping = SHIPPING_FEE;
+    const total = roundMoney(subtotal + shipping);
     const orderId = new mongoose.Types.ObjectId();
 
     order = await Order.create({
       _id: orderId,
       userId: req.user.id,
-      items,
+      items: verifiedItems,
       subtotal,
       shipping,
       total,
@@ -219,11 +272,14 @@ router.post("/", auth, async (req, res) => {
 
     console.error("DPO ERROR:", err.response?.data || err.message);
 
-    res.status(500).json(
-      err.response?.data?.message ||
+    res.status(err.statusCode || 500).json({
+      message:
+        err.response?.data?.message ||
         err.message ||
-        "Payment initialization failed"
-    );
+        "Payment initialization failed",
+      provider: err.provider,
+      code: err.providerCode,
+    });
   }
 });
 
@@ -312,6 +368,24 @@ router.get("/verify/:reference", auth, async (req, res) => {
     const verification = await verifyDpoToken(order.paymentReference);
 
     if (verification.result === "000") {
+      const verifiedAmount = roundMoney(verification.amount);
+      const orderAmount = roundMoney(order.total);
+
+      if (
+        verifiedAmount !== orderAmount ||
+        verification.currency !== order.currency
+      ) {
+        console.error("DPO PAYMENT MISMATCH:", {
+          orderId: order._id.toString(),
+          expectedAmount: orderAmount,
+          receivedAmount: verifiedAmount,
+          expectedCurrency: order.currency,
+          receivedCurrency: verification.currency,
+        });
+
+        return res.status(400).json("Payment amount or currency mismatch");
+      }
+
       order.paymentStatus = "paid";
       order.status = "processing";
       order.paymentProviderReference =
