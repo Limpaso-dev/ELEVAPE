@@ -11,7 +11,7 @@ export default function AgeGate({ onVerify }) {
   };
 
   const handleNo = () => {
-    alert("You must be 18+ to continue.");
+    alert("You must be 18 years of age or older to continue.");
   };
 
   return (
@@ -20,12 +20,15 @@ export default function AgeGate({ onVerify }) {
         
         {/* TITLE */}
         <h1 className="text-2xl font-bold gradient-text mb-4">
-          Elevape
+          ELVARA
         </h1>
 
         {/* MESSAGE */}
-        <p className="text-gray-300 mb-6">
-          Welcome to Elevape. Please confirm that you are 18 years of age or older to continue browsing our store.
+        <p className="text-gray-300 mb-6 leading-relaxed">
+          Welcome to <span className="text-white font-semibold">Elvara</span>.
+          Our website is intended for adults. Please confirm that you are at
+          least <strong>18 years old</strong> before continuing to browse and
+          shop our premium footwear collection.
         </p>
 
         {/* QUESTION */}
@@ -37,14 +40,14 @@ export default function AgeGate({ onVerify }) {
         <div className="flex justify-center gap-4 mb-6">
           <button
             onClick={handleYes}
-            className="px-6 py-2 bg-gradient-to-r from-primary to-secondary rounded font-semibold"
+            className="px-6 py-2 bg-gradient-to-r from-primary to-secondary rounded font-semibold text-white"
           >
             Yes
           </button>
 
           <button
             onClick={handleNo}
-            className="px-6 py-2 bg-red-500 rounded font-semibold"
+            className="px-6 py-2 bg-red-500 rounded font-semibold text-white"
           >
             No
           </button>
