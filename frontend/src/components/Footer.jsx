@@ -34,23 +34,23 @@ export default function Footer() {
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-primary/90 via-secondary/80 to-accent/80 shadow-[0_10px_25px_rgba(138,43,226,0.22)]">
                 <img
                   src="/images/Elevape logo.png"
-                  alt="ELEVAPE"
+                  alt="ELVARA"
                   className="h-6 w-6 object-contain"
                 />
               </div>
               <div>
                 <p className="text-lg font-bold tracking-[0.16em] text-white">
-                  ELEVAPE
+                  ELVARA
                 </p>
                 <p className="text-[11px] uppercase tracking-[0.24em] text-gray-400">
-                  Premium Furniture Store
+                  Premium Footwear Store
                 </p>
               </div>
             </div>
 
             <p className="max-w-sm text-sm leading-6 text-gray-400">
-              Premium furniture crafted for comfort, durability, and timeless
-              design to elevate every living space.
+              Premium footwear designed for comfort, durability, and everyday
+              style—helping you step confidently wherever you go.
             </p>
 
             <div className="rounded-2xl border border-white/10 bg-black/20 px-4 py-4">
@@ -58,8 +58,8 @@ export default function Footer() {
                 Shop With Confidence
               </p>
               <p className="mt-2 text-sm leading-6 text-gray-300">
-                Browse furniture collections, manage your orders, and complete
-                your checkout smoothly on mobile or desktop.
+                Browse quality footwear, manage your orders, and complete your
+                checkout seamlessly on mobile or desktop.
               </p>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-6 flex flex-col gap-3 border-t border-white/10 pt-5 text-xs text-gray-500 sm:flex-row sm:items-center sm:justify-between sm:text-sm">
-          <p>&copy; {new Date().getFullYear()} ELEVAPE. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} ELVARA. All rights reserved.</p>
           <div className="flex flex-wrap gap-4">
             <Link className="transition hover:text-white" to="/privacy">
               Privacy

@@ -72,16 +72,16 @@ export default function Navbar() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/90 via-secondary/80 to-accent/80 shadow-[0_10px_25px_rgba(138,43,226,0.25)]">
               <img
                 src="/images/Elevape logo.png"
-                alt="ELEVAPE"
+                alt="ELVARA"
                 className="h-6 w-6 object-contain"
               />
             </div>
             <div className="hidden sm:block">
               <p className="text-base font-bold tracking-[0.16em] text-white">
-                ELEVAPE
+                ELVARA
               </p>
               <p className="text-[11px] uppercase tracking-[0.24em] text-gray-400">
-                Premium Furniture Store
+                Premium Footwear Store
               </p>
             </div>
           </button>
@@ -154,9 +154,9 @@ export default function Navbar() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-base font-bold tracking-[0.16em]">ELEVAPE</p>
+            <p className="text-base font-bold tracking-[0.16em]">ELVARA</p>
             <p className="text-[11px] uppercase tracking-[0.24em] text-gray-400">
-              Navigation
+              Premium Footwear Store
             </p>
           </div>
 

@@ -7,7 +7,7 @@ export default function CustomerSupport() {
       </h1>
 
       <p className="text-gray-400 text-sm sm:text-base">
-        At Elevape, we are committed to providing a smooth and reliable shopping experience. 
+        At Elvara, we are committed to providing a smooth and reliable shopping experience.
         If you need assistance or wish to return an item, please review the policy below.
       </p>
 
@@ -17,8 +17,8 @@ export default function CustomerSupport() {
         <section>
           <h2 className="text-white font-semibold">Returns & Refunds</h2>
           <p>
-            We understand that sometimes a product may not meet your expectations. 
-            Elevape allows returns for most furniture items within 7 days of delivery, 
+            We understand that sometimes a pair of shoes may not meet your expectations.
+            Elvara allows returns for most footwear products within 7 days of delivery,
             subject to the conditions outlined below.
           </p>
         </section>
@@ -27,10 +27,10 @@ export default function CustomerSupport() {
         <section>
           <h2 className="text-white font-semibold">Return Conditions</h2>
           <ul className="list-disc ml-5 space-y-1">
-            <li>Items must be unused and in original condition</li>
-            <li>All packaging and accessories must be intact</li>
+            <li>Items must be unworn and in their original condition</li>
+            <li>Original packaging, tags, and accessories must be intact</li>
             <li>Proof of purchase is required</li>
-            <li>Assembled or used furniture may not be eligible unless defective</li>
+            <li>Products showing signs of wear or misuse may not be eligible unless defective</li>
           </ul>
         </section>
 
@@ -38,10 +38,10 @@ export default function CustomerSupport() {
         <section>
           <h2 className="text-white font-semibold">Valid Reasons for Returns</h2>
           <ul className="list-disc ml-5 space-y-1">
-            <li>Damaged or defective items</li>
-            <li>Incorrect item delivered</li>
-            <li>Missing parts or accessories</li>
-            <li>Item not as described</li>
+            <li>Damaged or defective shoes</li>
+            <li>Incorrect item or size delivered</li>
+            <li>Missing accessories</li>
+            <li>Item significantly different from its description</li>
           </ul>
         </section>
 
@@ -50,9 +50,9 @@ export default function CustomerSupport() {
           <h2 className="text-white font-semibold">Non-Returnable Items</h2>
           <ul className="list-disc ml-5 space-y-1">
             <li>Items returned after 7 days</li>
-            <li>Used or customer-damaged products</li>
-            <li>Custom-made or special-order furniture</li>
-            <li>Items without original packaging</li>
+            <li>Worn, damaged, or altered footwear</li>
+            <li>Custom-made or special-order shoes</li>
+            <li>Items returned without their original packaging or tags</li>
           </ul>
         </section>
 
@@ -60,8 +60,8 @@ export default function CustomerSupport() {
         <section>
           <h2 className="text-white font-semibold">Refund Process</h2>
           <p>
-            Once your item is received and inspected, approved refunds are processed 
-            within 2–7 business days depending on your location. Refunds are issued 
+            Once your item is received and inspected, approved refunds are processed
+            within 2–7 business days depending on your location. Refunds are issued
             to the original payment method used at checkout.
           </p>
         </section>

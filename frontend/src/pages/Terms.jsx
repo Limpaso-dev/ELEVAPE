@@ -7,8 +7,8 @@ export default function Terms() {
       </h1>
 
       <p className="text-gray-400 text-sm sm:text-base">
-        Welcome to <span className="text-white font-semibold">Elevape</span>. 
-        By using our website, you agree to the following terms and conditions for purchasing furniture and home products.
+        Welcome to <span className="text-white font-semibold">Elvara</span>.
+        By using our website, you agree to the following terms and conditions for purchasing footwear and fashion products.
       </p>
 
       <div className="space-y-6 sm:space-y-8 text-gray-300 leading-relaxed text-sm sm:text-base">
@@ -64,7 +64,7 @@ export default function Terms() {
             5. Pricing & Accuracy
           </h2>
           <p>
-            We aim to ensure all furniture product details and prices are accurate. However, errors may occur,
+            We aim to ensure all footwear product details and prices are accurate. However, errors may occur,
             and we reserve the right to correct them or cancel orders if necessary.
           </p>
         </section>
@@ -97,8 +97,8 @@ export default function Terms() {
             8. Limitation of Liability
           </h2>
           <p>
-            Elevape is not liable for any indirect or consequential damages arising from the use
-            of this website or our furniture products.
+            Elvara is not liable for any indirect or consequential damages arising from the use
+            of this website or our footwear products.
           </p>
         </section>
 

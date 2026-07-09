@@ -22,11 +22,12 @@ export default function Home() {
               className="max-w-2xl space-y-4"
             >
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-accent">
-                Premium Furniture Store
+                Premium Footwear Store
               </p>
 
               <h1 className="text-3xl font-black leading-tight text-white sm:text-4xl md:text-5xl">
-                Elevate your space with premium furniture and timeless designs.
+                Step into style with premium shoes designed for comfort,
+                performance, and every occasion.
               </h1>
 
               <div className="flex flex-wrap gap-3 pt-2">
@@ -36,9 +37,9 @@ export default function Home() {
                   </button>
                 </Link>
 
-                <Link to="/support">
+                <Link to="/refund">
                   <button className="rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 sm:text-base">
-                    Customer Support
+                    Refund & Return Policy
                   </button>
                 </Link>
               </div>
@@ -52,20 +53,22 @@ export default function Home() {
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-accent">
             Featured Product
           </p>
-          <h2 className="mt-3 text-2xl font-bold text-white">PRO DESIGN</h2>
-          <p className="mt-1 text-sm text-gray-400">Modern design</p>
+          <h2 className="mt-3 text-2xl font-bold text-white">PRO RUNNER</h2>
+          <p className="mt-1 text-sm text-gray-400">
+            Performance meets style
+          </p>
 
           <div className="mt-6 rounded-[22px] bg-black/20 p-5">
             <img
               src="/images/pro-design.jpg"
-              alt="PRO DESIGN"
+              alt="PRO RUNNER"
               className="mx-auto w-[150px] object-contain sm:w-[180px]"
             />
           </div>
 
           <p className="mt-5 text-sm leading-6 text-gray-300">
-            Stylish, durable furniture crafted to enhance comfort and elevate
-            your living space with a premium finish.
+            Premium footwear crafted for all-day comfort, durability, and
+            modern style—perfect for work, sports, or everyday wear.
           </p>
 
           <Link to="/products">

@@ -25,7 +25,7 @@ export default function Products() {
       })
       .catch((err) => {
         console.error(err);
-        setError("We couldn't load furniture items right now.");
+        setError("We couldn't load shoes right now.");
       })
       .finally(() => {
         setLoading(false);
@@ -53,11 +53,11 @@ export default function Products() {
             </p>
             <div className="space-y-2">
               <h1 className="text-2xl font-black tracking-tight text-white sm:text-4xl">
-                Explore Premium Furniture Collections
+                Explore Premium Footwear Collections
               </h1>
               <p className="max-w-xl text-sm leading-6 text-gray-300 sm:text-base">
-                Browse modern furniture pieces, explore available styles, and
-                add your favorites to your space in just a few clicks.
+                Browse premium shoes, discover the latest styles, and add your
+                favorite pairs to your collection in just a few clicks.
               </p>
             </div>
           </div>
@@ -109,9 +109,9 @@ export default function Products() {
         </div>
       ) : products.length === 0 ? (
         <div className="rounded-[24px] border border-white/10 bg-white/[0.03] px-6 py-10 text-center">
-          <h2 className="text-xl font-semibold text-white">No furniture items yet</h2>
+          <h2 className="text-xl font-semibold text-white">No shoes available yet</h2>
           <p className="mt-2 text-sm text-gray-400">
-            Once items are added from the admin dashboard, they will appear
+            Once products are added from the admin dashboard, they will appear
             here.
           </p>
         </div>
@@ -167,7 +167,7 @@ export default function Products() {
                     </h2>
 
                     <p className="min-h-[2.5rem] text-xs leading-5 text-gray-400 sm:text-sm">
-                      {p.description || "Premium furniture piece"}
+                      {p.description || "Premium footwear"}
                     </p>
                   </div>
 

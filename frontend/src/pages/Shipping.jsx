@@ -15,7 +15,7 @@ export default function Shipping() {
         {/* INTRO */}
         <section>
           <p>
-            At <span className="text-white font-semibold">ELEVAPE</span>, we strive to process and deliver your furniture orders efficiently, 
+            At <span className="text-white font-semibold">ELVARA</span>, we strive to process and deliver your footwear orders efficiently,
             while keeping you informed every step of the way.
           </p>
         </section>
@@ -27,7 +27,7 @@ export default function Shipping() {
           </h2>
           <ul className="list-disc ml-5 space-y-1">
             <li>Orders are processed within 2 business days of payment confirmation.</li>
-            <li>Once processed, orders are prepared for delivery within the next business day.</li>
+            <li>Once processed, orders are prepared for dispatch within the next business day.</li>
           </ul>
         </section>
 
@@ -70,14 +70,14 @@ export default function Shipping() {
             Handling Out-of-Stock Items
           </h2>
           <p className="mb-2">
-            In rare cases where an item is temporarily out of stock:
+            In rare cases where a shoe style or size is temporarily unavailable:
           </p>
           <ul className="list-disc ml-5 space-y-1">
-            <li>Available items will be delivered immediately to avoid delays.</li>
-            <li>Missing items will be delivered separately once restocked — at no extra cost.</li>
+            <li>Available items will be shipped immediately to avoid unnecessary delays.</li>
+            <li>Unavailable items will be dispatched separately once they become available — at no extra cost.</li>
           </ul>
           <p className="mt-2">
-            Our goal is to ensure you receive your furniture as quickly as possible with minimal inconvenience.
+            Our goal is to ensure you receive your footwear as quickly as possible with minimal inconvenience.
           </p>
         </section>
 
@@ -105,9 +105,9 @@ export default function Shipping() {
                   ["Thika", "1–2 days"],
                   ["Machakos", "1–2 days"],
                   ["Nyeri", "2–3 days"],
-                ].map(([state, time]) => (
-                  <tr key={state} className="border-t border-white/10">
-                    <td className="p-2">{state}</td>
+                ].map(([region, time]) => (
+                  <tr key={region} className="border-t border-white/10">
+                    <td className="p-2">{region}</td>
                     <td className="p-2">{time}</td>
                   </tr>
                 ))}
